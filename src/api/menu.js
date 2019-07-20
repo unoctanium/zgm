@@ -1,18 +1,19 @@
 const Menu = [
     { header: "Apps" },
     {
-      name: "Dashboard",
       title: "Dashboard",
-      group: "apps",
       icon: "dashboard",
-      mini: true
+      href: null,
+      component: "Dashboard",
+      routename: null,
+      target: null,
+      disabled: null
     },
+    { divider: true},
     {
-      name: "ListWidget",
-      title: "List", 
-      component: "ListWidget",
+      title: "ListWidget",
       icon: "widgets",
-      mini: true
+      component: "ListWidget"
     },
     /*
     {
@@ -36,39 +37,53 @@ const Menu = [
       component: "widgets",
       icon: "widgets",
       items: [
-        { name: "social", 
-          title: "Social", 
-          component: "SocialWidget",
-          icon: "widgets"
+        { title: "Social", 
+          icon: "widgets",
+          routename: "widgets/social", 
+          //component: "SocialWidget",
         },
         {
-          name: "statistic",
           title: "Statistic",
-          badge: "new",
+          icon: "widgets",
           component: "StatisticWidget",
-          icon: "widgets"
+          badge: "new",
         },
         { name: "chart", 
           title: "Chart", 
           component: "ChartWidget",
-          icon: "widgets"
         },
-        { name: "list", 
-        title: "List", 
-        component: "ListWidget",
-        icon: "widgets"
+        { title: "List", 
+          icon: "widgets",
+          routename: "widgets/list", 
         }
       ]
     },
     { header: "CMS" },
     {
       title: "List & Query",
-      group: "layout",
-      icon: "view_compact",
-      items: [{ name: "Table", title: "Basic Table", component: "ListTable" }]
-    }
+      icon: "view_compact"
+    },
+    { title: 'Contacts', icon: 'contacts' },
+    { title: 'I am a link', icon: 'history', target: "_blank", href: "http://www.welt.de" },
+    {       
+      title: 'More',
+      icon: 'help',
+      items: [
+        { title: 'Import' },
+        { title: 'Export' },
+        { title: 'Print' },
+        { title: 'Undo changes' },
+        { title: 'Other contacts' }
+      ]
+    },
+    { divider: true },
+    { heading: "HEADING"},
+    { title: 'Help', icon: 'help', disabled: true }
+
   ]
+
   // reorder menu
+  /*
   Menu.forEach(item => {
     if (item.items) {
       item.items.sort((x, y) => {
@@ -78,5 +93,9 @@ const Menu = [
       })
     }
   })
-  
+  */
+
   export default Menu
+
+
+
