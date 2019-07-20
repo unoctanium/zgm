@@ -1,99 +1,91 @@
+/*
+  Menu is an array of Header, Divider and MenuEntry
+  Header: 
+  { header: "Apps" } // Produces a heading line in the drawer
+  Divider: 
+  { divider: true} // Produces a heading line in the drawer^
+  MenuEntry: // One menu entry in the drawer
+  {
+      title: "Dashboard", // Title/Text to show in the Menubar
+      icon: "dashboard", // Icon to show in  the Menubar. Optional
+      disabled: {type: boolean, default:null} // optional // true: disable menu item
+      active: {type: boolean, default:null} // optional // used wirh v-model. becomes true/false on activation/deactivation
+      target: null, // optional, i.e. "_blank"
+
+      // Navigation variants will be used in this priority. i.e., 
+      // if there are sub-items, routing will be ignored and
+      // if there is a href, the other two options (named_route and path_route) will be ignored
+
+      // Variant 1: Submenu-opener
+      items: [ ... ] // sub-items with same rules like MenuEntry // optional // default null // if provided, the route-options of the parent-menu-line are ignored
+
+      // Route variant 1: <a></a>
+      href: "https://somewhere.com", // default: null
+      
+      // Route variant 2: Named route
+      named_route: "ANamedRoute", // produces to="{ name:'ANamedRoute'}" // default: null
+
+      // Route variant 3: Path-Route
+      path_route: "a/path", // produces to="a/path" // default: null
+    }
+*/
+
 const Menu = [
     { header: "Apps" },
     {
       title: "Dashboard",
       icon: "dashboard",
-      href: null,
-      component: "Dashboard",
-      routename: null,
-      target: null,
-      disabled: null
+      named_route: "Dashboard"
     },
     { divider: true},
     {
       title: "ListWidget",
       icon: "widgets",
-      component: "ListWidget"
+      named_route: "ListWidget"      
     },
-    /*
-    {
-      title: "Chat",
-      group: "apps",
-      icon: "chat_bubble",
-      target: "_blank",
-      name: "Chat"
-    },
-    {
-      title: "Inbox",
-      group: "apps",
-      name: "Mail",
-      target: "_blank",
-      icon: "email"
-    },
-    */
     {
       title: "Widgets",
-      group: "widgets",
-      component: "widgets",
       icon: "widgets",
       items: [
         { title: "Social", 
           icon: "widgets",
-          routename: "widgets/social", 
-          //component: "SocialWidget",
-        },
-        {
-          title: "Statistic",
-          icon: "widgets",
-          component: "StatisticWidget",
-          badge: "new",
-        },
-        { name: "chart", 
-          title: "Chart", 
-          component: "ChartWidget",
+          component: "SocialWidget",
         },
         { title: "List", 
           icon: "widgets",
-          routename: "widgets/list", 
+          path_route: "/widgets/list"
         }
       ]
     },
-    { header: "CMS" },
+    { header: "SOME HEADER" },
     {
       title: "List & Query",
       icon: "view_compact"
     },
-    { title: 'Contacts', icon: 'contacts' },
+    { divider: true },
+    { header: "HEADING"},
     { title: 'I am a link', icon: 'history', target: "_blank", href: "http://www.welt.de" },
-    {       
-      title: 'More',
-      icon: 'help',
-      items: [
-        { title: 'Import', component: "ListWidget"},
-        { title: 'Export' },
-        { title: 'Print' },
-        { title: 'Undo changes' },
-        { title: 'Other contacts' }
+    { title: 'I am disabled', icon: 'help', disabled: true },
+    { title: 'I am dis and href', icon: 'help', path_route: '/a', disabled: true },
+    { title: 'I am href', icon: 'help', path_route: '/b' },
+    { divider: true },
+    { header: "HEADING2"},
+    { title: 'wasting space', icon: 'help', items: [
+        { title: 'blah1', icon: 'help' },  
+        { title: 'blah2', icon: 'help' },  
+        { title: 'blah3', icon: 'help' },  
+        { title: 'blah4', icon: 'help' },  
+        { title: 'blah5', icon: 'help' },  
+        { title: 'blah6', icon: 'help' },  
+        { title: 'blah7', icon: 'help' },  
+        { title: 'blah8', icon: 'help' }  
       ]
     },
-    { divider: true },
-    { heading: "HEADING"},
-    { title: 'Help', icon: 'help', disabled: true }
+    { title: 'Last', icon: 'help', path_route: '/z' },
+
+
 
   ]
-
-  // reorder menu
-  /*
-  Menu.forEach(item => {
-    if (item.items) {
-      item.items.sort((x, y) => {
-        let textA = x.title.toUpperCase()
-        let textB = y.title.toUpperCase()
-        return textA < textB ? -1 : textA > textB ? 1 : 0
-      })
-    }
-  })
-  */
 
   export default Menu
 

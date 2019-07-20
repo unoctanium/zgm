@@ -1,0 +1,15 @@
+{
+  "name": "zenGastroManagement",
+  "short_name": "zgm",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "theme_color": "#3F51B5",
+  "background_color": "#000",
+  "icons": [
+    {
+      "src": "/static/img/icons/logo.png",
+      "sizes": "200x200",
+      "type": "image/png"
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar color="primary" fixed app dark>
+  <v-toolbar color="primary" clipped-left fixed app dark>
     <v-toolbar-title>
       <v-toolbar-side-icon @click="handleDrawerToggle"></v-toolbar-side-icon>
     </v-toolbar-title>
