@@ -1,10 +1,11 @@
 <template>
-  <v-toolbar fixed app>
+  <v-toolbar color="primary" fixed app dark>
     <v-toolbar-title>
       <v-toolbar-side-icon @click="handleDrawerToggle"></v-toolbar-side-icon>
     </v-toolbar-title>
     <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
     <v-spacer></v-spacer>
+    <!-- FULLSCREEN BUTTON -->
     <v-toolbar-items>
       <v-btn icon @click="handleFullScreen()">
         <v-icon>fullscreen</v-icon>

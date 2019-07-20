@@ -1,11 +1,11 @@
 <template>
-  <v-app id="inspire" _class="app dashboard" dark>
-    <app-drawer _class="app--drawer" :showDrawer.sync="showDrawer"></app-drawer>
-    <app-toolbar _class="app--toolbar" @side-icon-click="handleDrawerVisiable"></app-toolbar>
+  <v-app id="inspire" class="app dashboard" dark >
+    <app-drawer class="app--drawer" :showDrawer.sync="showDrawer"></app-drawer>
+    <app-toolbar class="app--toolbar" @side-icon-click="handleDrawerVisiable"></app-toolbar>
     <v-content>
       <!-- Page Header -->
       <page-header></page-header>
-      <div class="page-wrapper">
+      <div _class="page-wrapper">
         <router-view></router-view>
       </div>
       <!-- App Footer -->

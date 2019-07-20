@@ -69,7 +69,7 @@ const Menu = [
       title: 'More',
       icon: 'help',
       items: [
-        { title: 'Import' },
+        { title: 'Import', component: "ListWidget"},
         { title: 'Export' },
         { title: 'Print' },
         { title: 'Undo changes' },

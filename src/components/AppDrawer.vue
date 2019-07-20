@@ -2,37 +2,19 @@
   <v-navigation-drawer 
     _class="app--drawer" 
     __class="blue-grey darken-4"
-    clipped
+    _clipped
     fixed
     v-model="localShowDrawer"
     app
     :width="drawWidth"
   >
-    
-    <v-toolbar
-      flat
-      class="transparent"
-      dense
-    >
-      <v-list
-        class="pa-0"
-      >
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-icon
-              large
-              color="orange"
-            >
-              {{computeLogo}}
-            </v-icon>
-          </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title v-text="appName" class="heading">
-              </v-list-tile-title>
-            </v-list-tile-content>
-        </v-list-tile>
-      </v-list>
+
+    <v-toolbar color="primary darken-1" dark>
+      <img src="@/assets/logo.png" height="36" alt="logo" />
+      <v-toolbar-title class="ml-0 pl-3" v-text="appName">
+      </v-toolbar-title>
     </v-toolbar>
+
     <v-divider />
 
     <v-list 
@@ -147,12 +129,9 @@ export default {
      }
   },
   computed: {
-    computeLogo() {
-      return "@/assets/logo.png"
-    }
   },
-  created() {},
-
+  created() {    
+  },
   methods: {
     genTarget(item) {
       if (item.href) return
@@ -169,4 +148,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.app--drawer
+  overflow: hidden
 </style>
