@@ -114,7 +114,7 @@ export default {
     },
     showDrawer: {
       type: Boolean,
-      default: true
+      default: false
     }
   },
   data() {
