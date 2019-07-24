@@ -3,40 +3,52 @@
     <router-view>
     </router-view>
    <!-- global snackbar -->
-    <v-snackbar :timeout="5000" bottom right :color="snackbar.color" v-model="snackbar.show">
+    <v-snackbar :timeout="17500" bottom right :color="snackbar.color" v-model="snackbar.show">
       {{ snackbar.text }}
+      <v-spacer />
+        <v-btn
+          v-if="snackbar.buttonAction!=null"
+          flat
+          @click='snackbar.buttonAction'
+        >
+          {{ snackbar.buttonText }}
+        </v-btn>
       <v-btn dark flat @click.native="snackbar.show = false" icon>
         <v-icon>close</v-icon>
       </v-btn>
     </v-snackbar> 
-    <install-prompt></install-prompt>
   </div>
 </template>
 
 <script>
 //import AppEvents from "./event"
-import InstallPrompt from '@/components/InstallPrompt';
-
+import installPrompt from './installPrompt'
 export default {
   components: {
     // add components like ThemeSettings right drawer
-    InstallPrompt
   },
+  mixins: [installPrompt],
   data() {
     return {
       snackbar: {
         show: false,
+        color: "",
         text: "",
-        color: ""
-      }
+        buttonText: null,
+        buttonAction: null
+      },
     }
   },
   created() {
     // add app events
   },
+  mounted() {
+    //
+  },
   methods: {
     // add methods like ThemeSettings right drawer
   }
+  
 }
 </script>
 
@@ -48,5 +60,11 @@ export default {
   border-radius: 0;
 }
 */
+</style>
 
+<style scoped>
+/* Provide better right-edge spacing when using an icon button there. */
+.snack >>> .v-snack__content {
+  padding-right: 16px;
+}
 </style>

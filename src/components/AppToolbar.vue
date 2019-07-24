@@ -5,11 +5,27 @@
     </v-toolbar-title>
     <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
     <v-spacer></v-spacer>
-    <!-- FULLSCREEN BUTTON -->
+    
     <v-toolbar-items>
-      <v-btn icon @click="handleFullScreen()">
+      <!-- FULLSCREEN BUTTON -->
+      <v-btn 
+        v-if="!isStandaloneApp"
+        icon 
+        @click="handleFullScreen()"
+      >
         <v-icon>fullscreen</v-icon>
       </v-btn>
+
+      <!-- REFRESH BUTTON -->
+
+      <v-btn 
+        icon 
+        @click="handleRefresh()"
+      >
+        <v-icon>refresh</v-icon>
+      </v-btn>
+
+      <!-- NOTIFICATIONS BUTTON -->
       <v-menu offset-y origin="center center" class="elelvation-1" :nudge-bottom="14" transition="scale-transition">
         <v-btn icon flat slot="activator">
           <v-badge color="red" overlap>
@@ -49,11 +65,13 @@
 </template>
 <script>
 // import NotificationList from "@/components/widgets/list/NotificationList"
+// import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
 export default {
   name: "AppToolbar",
   components: {
     // NotificationList
+    // InstallPrompt
   },
   data() {
     return {
@@ -76,12 +94,19 @@ export default {
           title: "Logout",
           click: this.handleLogut
         }
-      ]
+      ],
+      refreshing: false
     }
   },
   computed: {
     toolbarColor() {
       return this.$vuetify.options.extra.mainNav
+    },
+    isStandaloneApp() {
+        if(window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone))
+          return true
+        else
+          return false
     }
   },
   methods: {
@@ -90,6 +115,11 @@ export default {
     },
     handleFullScreen() {
       Util.toggleFullScreen()
+    },
+    handleRefresh() {
+      if (this.refreshing) return;
+        this.refreshing = true;
+        window.location.reload();
     },
     handleLogut() {
       //handle logout

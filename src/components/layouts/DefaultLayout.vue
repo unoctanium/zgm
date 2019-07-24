@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" class="app dashboard" dark >
+  <v-app id="inspire" class="app dashboard" _style="background: #3F51B5" dark>
     <app-drawer class="app--drawer" :showDrawer.sync="showDrawer"></app-drawer>
     <app-toolbar class="app--toolbar" @side-icon-click="handleDrawerVisiable"></app-toolbar>
     <v-content>
@@ -11,6 +11,8 @@
       <!-- App Footer -->
       <v-footer height="auto" _class="white pa-3 app--footer">
         <span class="caption">isocked.com Design &copy; {{ new Date().getFullYear() }}</span>
+        <v-spacer></v-spacer>
+        {{ version }}
         <v-spacer></v-spacer>
         <span class="caption mr-1"> Make With Love </span>
         <v-icon color="pink" small>favorite</v-icon>
@@ -26,6 +28,7 @@ import AppDrawer from "@/components/AppDrawer"
 import AppToolbar from "@/components/AppToolbar"
 import AppFab from "@/components/AppFab"
 import PageHeader from "@/components/PageHeader"
+
 export default {
   components: {
     AppDrawer,
@@ -37,6 +40,11 @@ export default {
     return {
       showDrawer: false
     }
+  },
+  computed: {
+    version() {
+      return process.env.VUE_APP_APP_VERSION
+    } 
   },
   methods: {
     handleDrawerVisiable() {

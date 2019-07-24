@@ -1,77 +1,71 @@
 <template>
-  <!--<v-alert
-    _v-if="showInstallBanner"
-    _v-model="alert"
-    value="true"
-    dismissible
-    type="info"
-  >
-    Do you want to <a href="#" @click.prevent="install">add this app to your home screen?</a>
-  </v-alert>
-  -->
-
-  <v-dialog
-    v-if="showInstallBanner"
-    width="500"
-    value="true"
-  >
-    <v-card>
-      <v-card-title
-        class="headline grey lighten-2"
-        primary-title
-      >
-        Install as app
-      </v-card-title>
-
-      <v-card-text>
-        Do you want to <a href="#" @click.prevent="install">add this app to your home screen?</a>
-      </v-card-text>
-
-      <v-divider></v-divider>
-
-      <!--
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn
-          color="primary"
-          flat
-          @click="dialog = false"
-        >
-          I accept
-        </v-btn>
-      </v-card-actions>
-      -->
-
-    </v-card>
-  </v-dialog>
-
+  <div></div>
 </template>
 
 <script>
-
-let installEvent;
+/*
 export default {
   name: 'installPrompt',
   data() {
     return {
-      showInstallBanner: false
+      installEvent: null,
+      installedEvent: null
     };
+  },
+  computed: { 
   },
   created() {
     window.addEventListener('beforeinstallprompt', e => {
-      e.preventDefault();
-      installEvent = e;
-      this.showInstallBanner = true;
+      e.preventDefault()
+      this.installEvent = e
+      localStorage.setItem('installEvent', JSON.stringify(this.installEvent));
+    });
+    window.addEventListener('appinstalled', () => {
+      this.$snackbar = {
+        show: true,
+        color: 'green',
+        text: 'APP INSTALLED',
+        timeout: 5000
+      }
     });
   },
+  mounted() {
+    if (localStorage.getItem('installEvent')) {
+      this.installEvent = JSON.parse(localStorage.getItem('installEvent'))
+      this.$snackbar = {
+        show: true,
+        color: 'green',
+        text: '<a :href="handleInstallButton"> INSTALL AS APP </a>',
+        timeout: 10000
+      }
+    }
+  },
   methods: {
-    install() {
-      this.showInstallBanner = false;
-      installEvent.prompt();
-      installEvent.userChoice.then(() => {
-        installEvent = null;
-      });
+    handleInstallButton() {
+      this.$snackbar = {
+        show: false,
+        color: 'green',
+        text: '',
+        timeout: 5000
+      }
+      this.installEvent.prompt()
+      this.installEvent.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          // console.log('User accepted the A2HS prompt');
+          this.installEvent = null
+          localStorage.removeItem('installEvent')
+        } 
+        else {
+          // console.log('User dismissed the A2HS prompt');
+        }
+
+      })
     }
   }
-};
+
+}
+*/
 </script>
+
+
+
