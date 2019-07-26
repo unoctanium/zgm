@@ -9,6 +9,9 @@ node_modules
 # local firebase deploy
 .firebase
 
+# firebase config
+**/firebase/config.js
+
 # Log files
 npm-debug.log*
 yarn-debug.log*

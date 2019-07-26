@@ -1,58 +1,83 @@
 import { AuthLayout, DefaultLayout } from "@/components/layouts"
 
-export const publicRoute = [
+export const routes = [
   { path: "*", component: () => import(/* webpackChunkName: "errors-404" */ "@/views/error/NotFound.vue") },
+  
   {
     path: "/auth",
     component: AuthLayout,
-    meta: { title: "Login" },
-    redirect: "/auth/login",
+    meta: { title: "Sign in" },
+    redirect: "/auth/signin",
     hidden: true,
     children: [
       {
-        path: "login",
-        name: "login",
-        meta: { title: "Login" },
-        component: () => import(/* webpackChunkName: "login" */ "@/views/auth/Login.vue")
-      }
+        path: "signin",
+        name: "signin",
+        meta: { title: "Sign in" },
+        component: () => import(/* webpackChunkName: "signin" */ "@/views/auth/Signin.vue")
+      },
+      {
+        path: "signup",
+        name: "signup",
+        meta: { title: "Sign up" },
+        component: () => import(/* webpackChunkName: "signup" */ "@/views/auth/Signup.vue")
+      },
+      {
+        path: "signout",
+        name: "signout",
+        meta: { title: "Sign out", authRequired: true },
+        component: () => import(/* webpackChunkName: "signout" */ "@/views/auth/Signout.vue")
+      },
+      {
+        path: "profile",
+        name: "profile",
+        meta: { title: "Profile", authRequired: true },
+        component: () => import(/* webpackChunkName: "profile" */ "@/views/auth/Profile.vue")
+      },
     ]
   },
 
   {
+    path: "/403",
+    name: "access-denied",
+    meta: { title: "Access Denied"},
+    component: () => import(/* webpackChunkName: "error-403" */ "@/views/error/AccessDenied.vue")
+  },
+
+  {
     path: "/404",
-    name: "404",
+    name: "not-found",
     meta: { title: "Not Found" },
     component: () => import(/* webpackChunkName: "errors-404" */ "@/views/error/NotFound.vue")
   },
 
   {
     path: "/500",
-    name: "500",
+    name: "server-error",
     meta: { title: "Server Error" },
-    component: () => import(/* webpackChunkName: "errors-500" */ "@/views/error/Error.vue")
-  }
-]
+    component: () => import(/* webpackChunkName: "errors-500" */ "@/views/error/ServerError.vue")
+  },
 
-export const protectedRoute = [
   {
     path: "/",
+    name: "home",
     component: DefaultLayout,
-    meta: { title: "Home", group: "apps", icon: "" },
+    meta: { title: "Home"},
     redirect: "/dashboard",
     children: [
       {
         path: "/dashboard",
         name: "Dashboard",
-        meta: { title: "Home", group: "apps", icon: "dashboard" },
+        meta: { title: "Home", authRequired: true},
         component: () => import(/* webpackChunkName: "dashboard" */ "@/views/Dashboard.vue")
       },
 
       {
-        path: "/403",
-        name: "Forbidden",
-        meta: { title: "Access Denied", hiddenInMenu: true },
-        component: () => import(/* webpackChunkName: "error-403" */ "@/views/error/Deny.vue")
-      }
+        path: "/about",
+        name: "About",
+        meta: { title: "About"},
+        component: () => import(/* webpackChunkName: "about" */ "@/views/About.vue")
+      },
     ]
   },
 
@@ -76,13 +101,13 @@ export const protectedRoute = [
   {
     path: "/widgets",
     component: DefaultLayout,
-    meta: { title: "Widget", icon: "widgets", group: "advance" },
+    meta: { title: "Widget"},
     redirect: "/widgets/list",
     children: [
       {
         path: "/widgets/list",
         name: "ListWidget",
-        meta: { title: "List Widget" },
+        meta: { title: "List Widget", authRequired: true },
         component: () => import(/* webpackChunkName: "chart-widget" */ "@/views/widgets/List.vue")
       }
       /*,

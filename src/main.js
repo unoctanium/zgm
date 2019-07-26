@@ -5,8 +5,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
+import FirebaseAuthPlugin from './firebase/'
 
 Vue.config.productionTip = false
+Vue.use(FirebaseAuthPlugin)
 
 new Vue({
   router,

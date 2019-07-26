@@ -1,5 +1,5 @@
 // Update the version number for a new production build !!!
-// version: '0.0.9'
+// version: '0.0.13'
 // Also update version in .env.production
 
 // install new service worker when ok, then reload page.
@@ -22,6 +22,8 @@ self.addEventListener("message", msg=>{
 })
 
 self.__precacheManifest = [].concat(self.__precacheManifest || []);
+// eslint-disable-next-line
 workbox.precaching.suppressWarnings();
+// eslint-disable-next-line
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
