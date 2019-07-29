@@ -3,9 +3,21 @@
     <v-card-text>
       <div class="layout column align-center">
         <img src="@/assets/logo.png" alt="zgm logo" width="120" height="120" />
-        <h1 class="flex my-4 primary--text">zgm</h1>
+        <h1 class="flex my-4 primary--text">{{ appShortTitle }}</h1>
       </div>
-      <v-form @submit.prevent="onSignin">
+      
+      <!-- Loader -->
+      <div v-show="user === undefined">Authenticating...</div>
+
+      <!-- Offline instruction -->
+      <div v-show="!networkOnLine" data-test="offline-instruction">
+        Please check your connection, login feature is not available offline.
+      </div>
+
+      <!-- Login Error -->
+      <p v-if="authError">{{ authError }}</p>
+
+      <v-form @submit="onSignin" @keyup.enter.native="onSignin">
         <v-text-field
           append-icon="person"
           name="email"
@@ -28,13 +40,20 @@
           <v-spacer></v-spacer>
           <v-btn 
             block 
-            color="primary" type="submit"
-            :loading="loading"
+            color="primary" 
+            type="submit"
+            :disabled = "!networkOnLine"
           >
             Login
             <!--<span slot="loader" class="custom-loader">
               <v-icon light>cached</v-icon>
             </span>-->
+          </v-btn>
+          <v-btn
+            flat 
+            to="/auth/signup"
+          >
+            Sign up new account
           </v-btn>
         </div>
       </v-form>
@@ -43,34 +62,49 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+
+import { mapState, mapActions } from 'vuex'
+
 export default {
-  computed: {
-    ...mapGetters(['user']),
-    nextRoute () {
-      return this.$route.query.redirect || '/'
-    }
-  },
   data () {
     return {
-      loading: false,
       email: '',
       password: '',
-      auth: null
+      //loginError: null
     }
   },
+  computed: {
+    ...mapState('auth', ['user', 'authError']),
+    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
+    nextRoute () {
+      return this.$route.query.redirectUrl || '/'
+    }
+  },
+  mounted() {
+    this.resetError()
+  },
   watch: {
-    user (auth) {
-      if(auth){
-        this.$router.replace(this.nextRoute)
-      }
+    user: {
+      handler(user) {
+        if (user!=null) {
+          const redirectUrl = (this.$route.query.redirectUrl == null)
+            ? '/profile'
+            : this.$route.query.redirectUrl
+          this.$router.push(redirectUrl)
+        }
+      },
+      immediate: true
     }
   },
   methods: {
-    async onSignin () {
-      const auth = await this.$auth.login(this.email, this.password)
-      this.auth = auth
+    ...mapActions('auth', ['signIn', 'resetError']),
+    
+    async onSignin(event) {
+      event.preventDefault()
+      await this.signIn ( { email:this.email, password:this.password })
     }
+
   }
 }
+
 </script>

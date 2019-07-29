@@ -9,7 +9,7 @@
         <router-view></router-view>
       </div>
       <!-- App Footer -->
-      <v-footer height="auto" _class="white pa-3 app--footer">
+      <v-footer height="auto" class="_white pa-3 app--footer">
         <span class="caption">isocked.com Design &copy; {{ new Date().getFullYear() }}</span>
         <v-spacer></v-spacer>
         {{ version }}

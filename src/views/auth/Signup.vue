@@ -3,9 +3,21 @@
     <v-card-text>
       <div class="layout column align-center">
         <img src="@/assets/logo.png" alt="zgm logo" width="120" height="120" />
-        <h1 class="flex my-4 primary--text">zgm</h1>
+        <h1 class="flex my-4 primary--text">{{ appShortTitle}}</h1>
       </div>
-      <v-form @submit.prevent="onSignup">
+
+      <!-- Loader -->
+      <div v-show="user === undefined">Authenticating...</div>
+
+      <!-- Offline instruction -->
+      <div v-show="!networkOnLine" data-test="offline-instruction">
+        Please check your connection, login feature is not available offline.
+      </div>
+
+      <!-- Login Error -->
+      <p v-if="authError">{{ authError }}</p>
+
+      <v-form @submit="onSignup" @keyup.enter.native="onSignup">
         <v-text-field
           append-icon="person"
           name="email"
@@ -36,13 +48,20 @@
           <v-spacer></v-spacer>
           <v-btn 
             block 
-            color="primary" type="submit"
-            :loading="loading"
+            color="primary" 
+            type="submit"
+            :disabled = "!networkOnLine"
           >
             Sign up
             <!--<span slot="loader" class="custom-loader">
               <v-icon light>cached</v-icon>
             </span>-->
+          </v-btn>
+          <v-btn
+            flat 
+            to="/auth/signin"
+          >
+            Login with existing account
           </v-btn>
         </div>
       </v-form>
@@ -51,24 +70,46 @@
 </template>
 
 <script>
+
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data () {
     return {
       email: '',
       password: '',
-      confirmPassword: ''
-    }
-  },
-  methods: {
-    onSignup () {
-      this.$store.dispatch('signUserUp', {email: this.email, password: this.password})
-      this.$router.push('/auth/profile')
+      confirmPassword: '',
     }
   },
   computed: {
+    ...mapState('auth', ['user', 'authError']),
+    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
     comparePasswords () {
       return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
     }
+  },
+  mounted() {
+    this.resetError()
+  },
+  watch: {
+    user: {
+      handler(user) {
+        if (user!=null) {
+          this.$router.push('/profile')
+        }
+      },
+      immediate: true
+    }
+  },
+  methods: {
+    ...mapActions('auth', ['signUp', 'resetError']),
+    
+    async onSignup(event) {
+      event.preventDefault()
+      await this.signUp ( { email:this.email, password:this.password })
+    }
+
   }
 }
+
 </script>

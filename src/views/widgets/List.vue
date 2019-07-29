@@ -4,6 +4,7 @@
       <v-layout row wrap>
         <v-flex lg6 sm12 xs12>
           <!--<message-list></message-list>-->
+          <v-btn @click="handleClick">CLICK</v-btn>
           List
         </v-flex>
         <v-flex lg6 sm12 xs12>

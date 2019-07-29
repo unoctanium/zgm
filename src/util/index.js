@@ -22,8 +22,10 @@ const toggleFullScreen = () => {
   }
 }
 
+export const isNull = (value) => !value && typeof value === 'object'
+
 export default {
   randomElement,
   toggleFullScreen,
-  kebab
+  kebab,
 }

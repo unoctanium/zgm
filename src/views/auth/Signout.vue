@@ -1,12 +1,15 @@
 <template>
   <div>Logged out</div>
 </template>
+
 <script>
+import { mapActions } from 'vuex'
 export default {
+  methods: {
+    ...mapActions('auth', ['signOut']),
+  },
   async mounted () {
-    await this.$auth.logout()
-    this.$store.dispatch('signUserOut')
-    this.$router.replace({ name: "home"})
+    await this.signOut ()
   }
 }
 </script>

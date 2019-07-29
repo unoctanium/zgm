@@ -1,9 +1,32 @@
 <template>
-  <v-toolbar color="primary" clipped-left fixed app dark>
+  <v-toolbar _color="primary" clipped-left _fixed app dark extended extension-height="2">
+    
+    <v-progress-linear 
+      v-if="!networkOnLine"
+      slot="extension" 
+      indeterminate
+      class="ma-0"
+      color="red"
+      height="2"
+    >
+    </v-progress-linear>
+    <v-progress-linear 
+      v-else-if="loading"
+      slot="extension" 
+      indeterminate
+      height="2"
+    >
+    </v-progress-linear>
+
+
     <v-toolbar-title>
       <v-toolbar-side-icon @click="handleDrawerToggle"></v-toolbar-side-icon>
     </v-toolbar-title>
+    
+    <!--
     <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
+    -->
+    
     <v-spacer></v-spacer>
     
     <v-toolbar-items>
@@ -63,10 +86,13 @@
     </v-toolbar-items>
   </v-toolbar>
 </template>
+
 <script>
 // import NotificationList from "@/components/widgets/list/NotificationList"
 // import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
+import { mapState } from 'vuex'
+
 export default {
   name: "AppToolbar",
   components: {
@@ -95,7 +121,7 @@ export default {
           click: this.handleLogut
         }
       ],
-      refreshing: false
+      refreshing: false,
     }
   },
   computed: {
@@ -107,7 +133,8 @@ export default {
           return true
         else
           return false
-    }
+    },
+    ...mapState('app', ['loading', 'networkOnLine']),
   },
   methods: {
     handleDrawerToggle() {
@@ -123,16 +150,21 @@ export default {
     },
     handleLogut() {
       //handle logout
-      this.$router.push('/auth/login')
+      this.$router.replace('/auth/signout')
     },
     handleSetting() {
 
     },
     handleProfile() {
-      
+      this.$router.push('/profile')
     }
   }
 }
 </script>
 
-<style lang="stylus" scoped></style>
+<style>
+.v-toolbar__content, 
+.v-toolbar__extension {
+    padding: 0 0;
+}
+</style>
