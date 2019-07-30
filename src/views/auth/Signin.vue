@@ -1,4 +1,5 @@
 <template>
+
   <v-card class="elevation-1 pa-3 login-card">
     <v-card-text>
       <div class="layout column align-center">
@@ -17,7 +18,8 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form @submit="onSignin" @keyup.enter.native="onSignin">
+      <v-form lazy-validation @submit="onSignin" @keyup.enter.native="onSignin">
+        
         <v-text-field
           append-icon="person"
           name="email"
@@ -42,7 +44,7 @@
             block 
             color="primary" 
             type="submit"
-            :disabled = "!networkOnLine"
+            :disabled = "!networkOnLine || !formValid"
           >
             Login
             <!--<span slot="loader" class="custom-loader">
@@ -70,7 +72,7 @@ export default {
     return {
       email: '',
       password: '',
-      //loginError: null
+      formValid: true
     }
   },
   computed: {
@@ -101,6 +103,7 @@ export default {
     
     async onSignin(event) {
       event.preventDefault()
+      event.stopPropagation()
       await this.signIn ( { email:this.email, password:this.password })
     }
 

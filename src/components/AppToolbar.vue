@@ -27,6 +27,10 @@
     <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
     -->
     
+    <v-toolbar-title>
+        {{title}}
+      </v-toolbar-title>
+
     <v-spacer></v-spacer>
     
     <v-toolbar-items>
@@ -99,6 +103,12 @@ export default {
     // NotificationList
     // InstallPrompt
   },
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+  },
   data() {
     return {
       items: [
@@ -115,7 +125,7 @@ export default {
           click: this.handleSetting
         },
         {
-          icon: "fullscreen_exit",
+          icon: "power_settings_new",
           href: "#",
           title: "Logout",
           click: this.handleLogut

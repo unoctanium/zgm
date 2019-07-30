@@ -17,7 +17,8 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form @submit="onSignup" @keyup.enter.native="onSignup">
+      <v-form lazy-validation  @submit="onSignup" @keyup.enter.native="onSignup">
+        
         <v-text-field
           append-icon="person"
           name="email"
