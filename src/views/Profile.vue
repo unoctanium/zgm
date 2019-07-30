@@ -7,7 +7,7 @@
 >
   <v-img
     :src="require('@/assets/default-avatar.jpg')"
-    height="300px"
+    width="375"
     dark
   >
     <v-layout
@@ -33,6 +33,7 @@
   </v-img>
 
   <v-list two-line>
+    <!--
     <v-list-item _click="">
       <v-list-item-icon>
         <v-icon color="indigo">phone</v-icon>
@@ -95,6 +96,7 @@
         <v-list-item-subtitle>Orlando, FL 79938</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
+    -->
   </v-list>
 </v-card>
 

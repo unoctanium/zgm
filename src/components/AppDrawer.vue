@@ -37,14 +37,14 @@
             no-action
           >
             <template v-slot:activator>
-              <v-list-tile>
-                <v-list-tile-content>
-                  <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>{{ item.title }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
 
-            <v-list-tile
+            <v-list-item
               v-for="subItem in item.items"
               :key="subItem.title"
               :to="genTarget(subItem)"
@@ -52,14 +52,14 @@
               :disabled="subItem.disabled"
               :target="subItem.target"
             >
-              <v-list-tile-content>
-                <v-list-tile-title>{{ subItem.title }}</v-list-tile-title>
-              </v-list-tile-content>
+              <v-list-item-content>
+                <v-list-item-title>{{ subItem.title }}</v-list-item-title>
+              </v-list-item-content>
 
-              <v-list-tile-action v-if="subItem.icon">
+              <v-list-item-action v-if="subItem.icon">
                 <v-icon>{{ subItem.icon }}</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           
           </v-list-group>
 
@@ -76,7 +76,7 @@
           >
           </v-divider>
             
-          <v-list-tile
+          <v-list-item
             v-else-if="item.icon"
             :key="item.title"
             :href="item.href"
@@ -84,14 +84,14 @@
             :disabled="item.disabled"
             :target="item.target"
           >
-            <v-list-tile-action v-if="item.icon">
+            <v-list-item-action v-if="item.icon">
               <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
+            </v-list-item-action>
 
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
         </template>
       </v-list>

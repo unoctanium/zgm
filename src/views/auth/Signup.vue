@@ -59,7 +59,7 @@
             </span>-->
           </v-btn>
           <v-btn
-            flat 
+            text 
             to="/auth/signin"
           >
             Login with existing account
