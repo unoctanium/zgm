@@ -1,6 +1,7 @@
 <template>
-  <v-toolbar _color="primary" clipped-left _fixed app dark extended extension-height="2">
+  <v-app-bar _color="primary" clipped-left _fixed app dark extended extension-height="2">
     
+    <!-- EXTENSION: PROGRESS AND OFFLINE INDICATORS -->
     <v-progress-linear 
       v-if="!networkOnLine"
       slot="extension" 
@@ -18,77 +19,126 @@
     >
     </v-progress-linear>
 
-
-    <v-toolbar-title>
-      <v-toolbar-side-icon @click="handleDrawerToggle"></v-toolbar-side-icon>
-    </v-toolbar-title>
+    <!-- DRAWER TOGGLE -->
+    <v-app-bar-nav-icon @click="handleDrawerToggle"></v-app-bar-nav-icon>
     
     <!--
     <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
     -->
     
+    <!-- TITLE -->
     <v-toolbar-title>
         {{title}}
       </v-toolbar-title>
 
     <v-spacer></v-spacer>
     
-    <v-toolbar-items>
-      <!-- FULLSCREEN BUTTON -->
-      <v-btn 
-        v-if="!isStandaloneApp"
-        icon 
-        @click="handleFullScreen()"
-      >
-        <v-icon>fullscreen</v-icon>
+    <!-- FULLSCREEN BUTTON -->
+    <v-btn 
+      v-if="!isStandaloneApp"
+      icon 
+      @click="handleFullScreen()"
+    >
+      <v-icon>fullscreen</v-icon>
+    </v-btn>
+
+    <!-- REFRESH BUTTON -->
+    <v-btn icon @click="handleRefresh()"
+    >
+      <v-icon>refresh</v-icon>
+    </v-btn>
+
+    <!-- NOTIFICATIONS BUTTON -->
+    <!--
+    <v-menu offset-y origin="center center" class="elelvation-1" :nudge-bottom="14" transition="scale-transition">
+      <v-btn icon text slot="activator">
+        <v-badge color="red" overlap>
+          <span slot="badge">3</span>
+          <v-icon medium>notifications</v-icon>
+        </v-badge>
       </v-btn>
+      <notification-list></notification-list>
+    </v-menu>
+    -->
 
-      <!-- REFRESH BUTTON -->
-
-      <v-btn 
-        icon 
-        @click="handleRefresh()"
-      >
-        <v-icon>refresh</v-icon>
-      </v-btn>
-
-      <!-- NOTIFICATIONS BUTTON -->
-      <v-menu offset-y origin="center center" class="elelvation-1" :nudge-bottom="14" transition="scale-transition">
-        <v-btn icon flat slot="activator">
-          <v-badge color="red" overlap>
-            <span slot="badge">3</span>
-            <v-icon medium>notifications</v-icon>
-          </v-badge>
-        </v-btn>
-        <!--<notification-list></notification-list>-->
-      </v-menu>
-      <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
-        <v-btn icon large flat slot="activator">
+    <!-- PROFILE MENU -->
+    <v-menu
+      _left
+      _bottom
+      offset-y origin="center center" :nudge-bottom="8"
+      transition="scale-transition"
+    >
+      <template v-slot:activator="{ on }">
+        <v-btn icon large v-on="on">
           <v-icon class="fa-2x">person</v-icon>
         </v-btn>
-        <v-list class="pa-0">
-          <v-list-tile
-            v-for="(item, index) in items"
-            :to="!item.href ? { name: item.name } : null"
-            :href="item.href"
-            @click="item.click"
-            ripple="ripple"
-            :disabled="item.disabled"
-            :target="item.target"
-            rel="noopener"
-            :key="index"
-          >
-            <v-list-tile-action v-if="item.icon">
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
-    </v-toolbar-items>
-  </v-toolbar>
+      </template>
+
+      <v-list>
+
+        <v-list-item
+          v-for="(item, index) in items"
+          :to="!item.href ? { name: item.name } : null"
+          :href="item.href"
+          @click="item.click"
+          ripple="ripple"
+          :disabled="item.disabled"
+          :target="item.target"
+          rel="noopener"
+          :key="index"
+        >
+          <v-list-item-action v-if="item.icon">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <!--
+        <v-list-item
+          v-for="n in 5"
+          :key="n"
+          @click="() => {}"
+        >
+          <v-list-item-title>Option {{ n }}</v-list-item-title>
+        </v-list-item>
+        -->
+
+      </v-list>
+    </v-menu>
+    <!--
+    <v-menu offset-y origin="center center" :nudge-bottom="10" transition="scale-transition">
+      <v-btn icon large text slot="activator">
+        <v-icon class="fa-2x">person</v-icon>
+      </v-btn>
+
+      <v-list class="pa-0">
+
+        <v-list-item
+          v-for="(item, index) in items"
+          :to="!item.href ? { name: item.name } : null"
+          :href="item.href"
+          @click="item.click"
+          ripple="ripple"
+          :disabled="item.disabled"
+          :target="item.target"
+          rel="noopener"
+          :key="index"
+        >
+          <v-list-item-action v-if="item.icon">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+      </v-list>
+    </v-menu>
+    -->
+
+  </v-app-bar>
 </template>
 
 <script>
@@ -173,7 +223,6 @@ export default {
 </script>
 
 <style>
-.v-toolbar__content, 
 .v-toolbar__extension {
     padding: 0 0;
 }

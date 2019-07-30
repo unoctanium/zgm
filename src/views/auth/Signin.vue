@@ -52,7 +52,7 @@
             </span>-->
           </v-btn>
           <v-btn
-            flat 
+            text 
             to="/auth/signup"
           >
             Sign up new account

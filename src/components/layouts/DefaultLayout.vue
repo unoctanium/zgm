@@ -7,7 +7,7 @@
       <!-- Page Header -->
       <!--<page-header></page-header>-->
 
-      <div _class="page-wrapper">
+      <div class="page-wrapper" pa-5>
         <router-view></router-view>
       </div>
       <!-- App Footer -->
@@ -57,8 +57,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
 .page-wrapper {
-  min-height: calc(100vh - 64px - 50px - 81px);
+  min-height: calc(100vh - 100px);  
+  padding: 10px;
 }
 </style>
