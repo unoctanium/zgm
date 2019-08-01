@@ -1,99 +1,172 @@
 
 <template>
 
-<v-card
-  max-width="375"
-  class="mx-auto"
->
-  <v-card-title>
-    <div class="display-1" v-show="user.isAdmin">ADMINISTRATOR</div>
-    <v-spacer></v-spacer>
-    <v-btn dark icon _class="mr-4">
-      <v-icon>edit</v-icon>
-    </v-btn>
-  </v-card-title>
+  <v-layout justify-center>
+    <v-dialog v-model="editing" fullscreen hide-overlay transition="dialog-bottom-transition">
 
-  <v-img
-    v-if="user.photoURL"
-    :src="user.photoURL"
-    width="375"
-    dark
-  >
-  </v-img>
-  <v-img
-    v-else
-    :src="require('@/assets/default-avatar.jpg')"
-    width="375"
-    dark
-  >
-  </v-img>
+      <!-- NON-EDIT MODE: SHOW PROFILE -->
+      <template v-slot:activator="{ on }">
 
-  <v-list two-line>
+        <v-card
+          max-width="375"
+          class="mx-auto"
+        >
+          <v-card-title>
+            <div class="display-1" v-show="user.isAdmin">ADMINISTRATOR</div>
+            <v-spacer></v-spacer>
+            
+            <v-btn icon v-on="on" _class="mr-4">
+              <v-icon>edit</v-icon>
+            </v-btn>
+          </v-card-title>
 
-    <v-list-item _click="">
-      <v-list-item-icon>
-        <v-icon color="indigo">person</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title> {{ (user.firstName ? user.firstName : 'unknown' ) }} </v-list-item-title>
-        <v-list-item-subtitle>First name</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+          <v-img
+            v-if="user.photoURL"
+            :src="user.photoURL"
+            width="375"
+            dark
+          >
+          </v-img>
+          <v-img
+            v-else
+            :src="require('@/assets/default-avatar.jpg')"
+            width="375"
+            dark
+          >
+          </v-img>
 
-    <v-list-item _click="">
-      <v-list-item-icon>
-        <v-icon color="indigo">person</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title> {{ (user.lastName ? user.lastName : 'unknown') }} </v-list-item-title>
-        <v-list-item-subtitle>Last name</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+          <v-list two-line>
 
-    <v-divider inset></v-divider>
+            <v-list-item _click="">
+              <v-list-item-icon>
+                <v-icon color="indigo">person</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title> {{ (user.firstName ? user.firstName : 'unknown' ) }} </v-list-item-title>
+                <v-list-item-subtitle>First name</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
-    <v-list-item _click="">
-      <v-list-item-icon>
-        <v-icon color="indigo">mail</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>{{ (user.phone ? user.phone : 'unknown' ) }}</v-list-item-title>
-        <v-list-item-subtitle>Email</v-list-item-subtitle>
-      </v-list-item-content>
-      <v-list-item-icon>
-        <v-icon>chat</v-icon>
-      </v-list-item-icon>
-    </v-list-item>
+            <v-list-item _click="">
+              <v-list-item-icon>
+                <v-icon color="indigo">person</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title> {{ (user.lastName ? user.lastName : 'unknown') }} </v-list-item-title>
+                <v-list-item-subtitle>Last name</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
 
-    <v-list-item _click="">
-      <v-list-item-icon>
-        <v-icon color="indigo">phone</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>{{ (user.phone ? user.phone : 'unknown' ) }}</v-list-item-title>
-        <v-list-item-subtitle>Phone</v-list-item-subtitle>
-      </v-list-item-content>
-      <v-list-item-icon>
-        <v-icon>chat</v-icon>
-      </v-list-item-icon>
-    </v-list-item>
+            <v-divider inset></v-divider>
 
-    <v-divider inset></v-divider>
+            <v-list-item _click="">
+              <v-list-item-icon>
+                <v-icon color="indigo">mail</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ (user.phone ? user.phone : 'unknown' ) }}</v-list-item-title>
+                <v-list-item-subtitle>Email</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>chat</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
 
-    <v-list-item _click="">
-      <v-list-item-icon>
-        <v-icon color="indigo">person</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>{{ (user.userLevel ? user.userLevel : 'unknown' ) }}</v-list-item-title>
-        <v-list-item-subtitle>user level</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
-    
-  </v-list>
-</v-card>
+            <v-list-item _click="">
+              <v-list-item-icon>
+                <v-icon color="indigo">phone</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ (user.phone ? user.phone : 'unknown' ) }}</v-list-item-title>
+                <v-list-item-subtitle>Phone</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>chat</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
 
+            <v-divider inset></v-divider>
 
+            <v-list-item _click="">
+              <v-list-item-icon>
+                <v-icon color="indigo">person</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ (user.userLevel ? user.userLevel : 'unknown' ) }}</v-list-item-title>
+                <v-list-item-subtitle>user level</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            
+          </v-list>
+        </v-card>
+
+      </template>
+
+      <!-- EDIT MODE: SHOW DIALOG -->
+      <v-card>
+        <v-toolbar>
+          <v-btn icon @click="onCancelEdit()">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>Edit User Profile</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn text @click="onCloseEdit()">Save</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        
+        <v-list three-line subheader>
+          <v-subheader>User Controls</v-subheader>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Content filtering</v-list-item-title>
+              <v-list-item-subtitle>Set the content filtering level to restrict apps that can be downloaded</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>Password</v-list-item-title>
+              <v-list-item-subtitle>Require password for purchase or use password to restrict purchase</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider></v-divider>
+        
+        <v-list three-line subheader>
+          <v-subheader>General</v-subheader>
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox v-model="notifications"></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Notifications</v-list-item-title>
+              <v-list-item-subtitle>Notify me about updates to apps or games that I downloaded</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox v-model="sound"></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Sound</v-list-item-title>
+              <v-list-item-subtitle>Auto-update apps at any time. Data charges may apply</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-action>
+              <v-checkbox v-model="widgets"></v-checkbox>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Auto-add widgets</v-list-item-title>
+              <v-list-item-subtitle>Automatically add home screen widgets</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+
+      </v-card>
+    </v-dialog>
+
+  </v-layout>
 </template>
 
 <script>
@@ -101,7 +174,8 @@ import {mapState} from 'vuex'
 export default {
   data () {
     return {
-      userFullName: '',
+      editing: false,
+      //userFullName: '',
       /*
       userId: null,
       userEmail: '',
@@ -131,9 +205,9 @@ export default {
 
   },
   mounted: function() {
-    this.userFullName = this.user.firstName + ' ' + this.user.lastName
+    //this.userFullName = this.user.firstName + ' ' + this.user.lastName
 
-
+    /*
     var self = this
     setTimeout(function(){
       self.userId = self.user.uid
@@ -172,10 +246,12 @@ export default {
       }
       self.loading = false
     }, 2000)
+    */
     console.log("@/profile: user:")
     console.log(this.user)
   },
   methods: {
+    /*
     onUpdateProfile () {
       this.editing = false
       const dateNow = new Date()
@@ -190,12 +266,19 @@ export default {
       this.lastName = this.editedLastName,
       this.avatar = this.editedAvatar
     },
+    */
     onCloseEdit () {
       this.editing = false
     },
+    onCancelEdit () {
+      this.editing = false
+    },
+    /*
     onClickEdit () {
       this.editing = true
     },
+    */
+    /*
     onPickFile () {
       this.$refs.fileInput.click()
     },
@@ -212,6 +295,7 @@ export default {
       fileReader.readAsDataURL(files[0])
       this.image = files[0]
     }
+    */
   }
 }
 </script>

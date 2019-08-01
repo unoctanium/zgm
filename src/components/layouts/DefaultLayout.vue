@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire" class="app dashboard" _style="background: #3F51B5" dark>
+  <v-app id="inspire" class="app dashboard" _style="background: #3F51B5">
     <app-drawer class="app--drawer" :showDrawer.sync="showDrawer"></app-drawer>
     <app-toolbar class="app--toolbar" :title="$route.meta.title" @side-icon-click="handleDrawerVisiable"></app-toolbar>
     <v-content>

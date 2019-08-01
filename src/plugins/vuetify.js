@@ -12,8 +12,8 @@ export default new Vuetify({
     iconfont: 'md',
   },
   theme: {
-    dark: true,
-    themes: {
+    //dark: true,
+    //themes: {
       /*
       light: {
         primary: '#3F51B5',
@@ -29,7 +29,7 @@ export default new Vuetify({
         primary: '#2196F3'
       },
       */
-    },
+    //},
   },
   customProperties: true
 })

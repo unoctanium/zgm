@@ -71,6 +71,14 @@ export const routes = [
         meta: { title: "Profile", authRequired: true },
         component: () => import(/* webpackChunkName: "profile" */ "@/views/Profile.vue")
       },
+      
+      //{
+      //  path: "settings",
+      //  name: "settings",
+      //  meta: { title: "Settings", authRequired: true },
+      //  component: () => import(/* webpackChunkName: "profile" */ "@/views/Settings.vue")
+      //},
+      
       {
         path: "/about",
         name: "About",

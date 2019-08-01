@@ -1,5 +1,8 @@
+
 <template>
+
   <div id="app-root">
+    <v-app>
     <router-view>
     </router-view>
    <!-- global snackbar -->
@@ -17,10 +20,14 @@
         <v-icon>close</v-icon>
       </v-btn>
     </v-snackbar> 
+    </v-app>
   </div>
-</template>
 
+
+</template>
 <script>
+
+
 //import AppEvents from "./event"
 import installPrompt from './installPrompt'
 export default {
@@ -37,13 +44,14 @@ export default {
         buttonText: null,
         buttonAction: null
       },
+      goDark: false
     }
   },
   created() {
     // add app events
   },
   mounted() {
-    //
+    
   },
   methods: {
     // add methods like ThemeSettings right drawer

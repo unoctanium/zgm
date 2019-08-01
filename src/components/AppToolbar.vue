@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar _color="primary" clipped-left _fixed app dark extended extension-height="2">
+  <v-app-bar _color="primary" clipped-left _fixed app extended extension-height="2">
     
     <!-- EXTENSION: PROGRESS AND OFFLINE INDICATORS -->
     <v-progress-linear 
@@ -137,6 +137,7 @@
       </v-list>
     </v-menu>
     -->
+    <settings v-model="settingsdialog"></settings>
 
   </v-app-bar>
 </template>
@@ -146,12 +147,14 @@
 // import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
 import { mapState } from 'vuex'
+import Settings from "@/components/Settings"
 
 export default {
   name: "AppToolbar",
   components: {
     // NotificationList
     // InstallPrompt
+    Settings
   },
   props: {
     title: {
@@ -182,6 +185,7 @@ export default {
         }
       ],
       refreshing: false,
+      settingsdialog: false
     }
   },
   computed: {
@@ -213,7 +217,8 @@ export default {
       this.$router.replace('/auth/signout')
     },
     handleSetting() {
-
+      //this.$router.push('/settings')
+      this.settingsdialog = true
     },
     handleProfile() {
       this.$router.push('/profile')
