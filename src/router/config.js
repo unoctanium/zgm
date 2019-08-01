@@ -65,12 +65,13 @@ export const routes = [
         meta: { title: "Home", authRequired: true},
         component: () => import(/* webpackChunkName: "dashboard" */ "@/views/Dashboard.vue")
       },
-      {
-        path: "profile",
-        name: "profile",
-        meta: { title: "Profile", authRequired: true },
-        component: () => import(/* webpackChunkName: "profile" */ "@/views/Profile.vue")
-      },
+      
+      //{
+      //  path: "profile",
+      //  name: "profile",
+      //  meta: { title: "Profile", authRequired: true },
+      //  component: () => import(/* webpackChunkName: "profile" */ "@/views/Profile.vue")
+      //},
       
       //{
       //  path: "settings",

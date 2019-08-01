@@ -138,6 +138,7 @@
     </v-menu>
     -->
     <settings v-model="settingsdialog"></settings>
+    <profile v-model="profiledialog"></profile>
 
   </v-app-bar>
 </template>
@@ -147,14 +148,17 @@
 // import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
 import { mapState } from 'vuex'
+
 import Settings from "@/components/Settings"
+import Profile from "@/components/Profile"
 
 export default {
   name: "AppToolbar",
   components: {
     // NotificationList
     // InstallPrompt
-    Settings
+    Settings,
+    Profile
   },
   props: {
     title: {
@@ -185,7 +189,8 @@ export default {
         }
       ],
       refreshing: false,
-      settingsdialog: false
+      settingsdialog: false,
+      profiledialog: false
     }
   },
   computed: {
@@ -221,7 +226,8 @@ export default {
       this.settingsdialog = true
     },
     handleProfile() {
-      this.$router.push('/profile')
+      //this.$router.push('/profile')
+      this.profiledialog = true
     }
   }
 }

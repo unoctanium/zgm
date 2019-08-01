@@ -78,11 +78,15 @@ export default {
   props: {
     value: Boolean
   },
-//  data () {
-//    return {
-//      dialog: false,
-//    }
-//  },
+  data () {
+    return {
+      adialog: false,
+      goDark: true,
+      notifications: null,
+      sound: null,
+      widgets: null
+    }
+  },
   computed: {
 //    ...mapState('app', [
 //      'darkMode'
@@ -99,7 +103,7 @@ export default {
   },
   mounted: function() {
     
-    console.log("@/settings: mounted")
+    //console.log("@/settings: mounted")
     // ODO!!! Put this in switch logic with store user data record in firestore
     this.$vuetify.theme.dark = true
   

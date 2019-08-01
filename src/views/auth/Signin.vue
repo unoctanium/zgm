@@ -90,7 +90,7 @@ export default {
       handler(user) {
         if (user!=null) {
           const redirectUrl = (this.$route.query.redirectUrl == null)
-            ? '/profile'
+            ? '/dashboard'
             : this.$route.query.redirectUrl
           this.$router.push(redirectUrl)
         }

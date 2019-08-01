@@ -18,7 +18,8 @@ export default {
     },
   },
   getters: {
-    isUserLoggedIn: state => (!isNull(state.user))
+    isUserLoggedIn: state => (!isNull(state.user)),
+    //getUser: state => (state.user)
   },
   actions: {
 
@@ -116,7 +117,7 @@ export default {
     /**
      * Action to sign user up
      */
-    signUp ({commit, dispatch}, payload) {
+    signUp: async ({commit, dispatch}, payload) => {
       commit('app/setLoading', true, { root: true })
       commit('setUser', null)
       commit('setError', null)
@@ -158,6 +159,29 @@ export default {
       }
       return userDb.create(user, firebaseAuthUser.uid)
     },
+
+
+    /**
+     * Action to update user data
+     */
+    update: async ({ commit }, { data }) => {
+      commit('app/setLoading', true, { root: true })
+      commit('setError', null)
+      const userDb = new UsersDB()
+      await userDb.update(data)
+      .then (() => {
+        commit('setError', null)
+        commit('setUser', data)
+        commit('app/setLoading', false, { root: true })
+      })
+      .catch((error) =>{
+        commit('setError', error)
+        commit('app/setLoading', false, { root: true })
+        console.log("Error: auth/update:")
+        console.log(error)
+      })
+    },
+
 
     /**
      * Action to update user data
