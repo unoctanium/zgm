@@ -96,7 +96,7 @@ export default {
     user: {
       handler(user) {
         if (user!=null) {
-          this.$router.push('/profile')
+          this.$router.push('/')
         }
       },
       immediate: true
@@ -105,9 +105,9 @@ export default {
   methods: {
     ...mapActions('auth', ['signUp', 'resetError']),
     
-    async onSignup(event) {
+    onSignup(event) {
       event.preventDefault()
-      await this.signUp ( { email:this.email, password:this.password })
+      this.signUp ( { email:this.email, password:this.password })
     }
 
   }

@@ -138,7 +138,8 @@
     </v-menu>
     -->
     <settings v-model="settingsdialog"></settings>
-    <profile v-model="profiledialog"></profile>
+    <profile v-model="profiledialog" :profileUser="profileUser"></profile>
+    <!--<profile v-model="profiledialog" :profileUser="profileUser"></profile>-->
 
   </v-app-bar>
 </template>
@@ -190,7 +191,8 @@ export default {
       ],
       refreshing: false,
       settingsdialog: false,
-      profiledialog: false
+      profiledialog: false,
+      profileUser: null
     }
   },
   computed: {
@@ -204,6 +206,7 @@ export default {
           return false
     },
     ...mapState('app', ['loading', 'networkOnLine']),
+    //...mapState('auth', ['user']),
   },
   methods: {
     handleDrawerToggle() {
@@ -228,6 +231,7 @@ export default {
     handleProfile() {
       //this.$router.push('/profile')
       this.profiledialog = true
+      //this.profileUser = this.user
     }
   }
 }

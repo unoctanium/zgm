@@ -260,7 +260,7 @@ export default {
       this.updatedUser.confirmPassword = ''
     },
 
-    /*
+    
     onPickFile () {
       this.$refs.fileInput.click()
     },
@@ -277,7 +277,7 @@ export default {
       fileReader.readAsDataURL(files[0])
       this.image = files[0]
     }
-    */
+    
   }
 }
 </script>

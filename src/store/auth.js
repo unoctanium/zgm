@@ -1,4 +1,6 @@
 import firebase from 'firebase/app'
+import 'firebase/storage' 
+
 import router from '@/router'
 import UsersDB from '@/firebase/users-db'
 import { isNull } from "@/util"
@@ -33,12 +35,24 @@ export default {
     /**
      * Callback fired when user signed in
      */
-    signedin: async ({ commit, dispatch }, firebaseAuthUser) => {
+    signedin: async ({ commit }, firebaseAuthUser) => {
       commit('app/setLoading', true, { root: true })
       const userFromFirebase = await new UsersDB().read(firebaseAuthUser.uid)
+  
       if (isNull(userFromFirebase)) {
-        // New User: fill profile datra
-        commit('setUser', dispatch('createUserFromFirebaseAuth', firebaseAuthUser ))
+        // New User: fill profile data
+        const providerData = firebaseAuthUser.providerData[0]
+        const { displayName, photoURL, email } = providerData
+        const user = {
+          email,
+          displayName: displayName || '',
+          photoURL: photoURL || '',
+          phone: '',
+          userLevel: 'free',
+          isAdmin: false
+        }
+        const userProfile = await new UsersDB().create(user, firebaseAuthUser.uid)
+        commit('setUser', userProfile)
       }
       else {
         // existing user
@@ -117,21 +131,20 @@ export default {
     /**
      * Action to sign user up
      */
-    signUp: async ({commit, dispatch}, payload) => {
+    signUp: async ({commit }, payload) => {
       commit('app/setLoading', true, { root: true })
       commit('setUser', null)
       commit('setError', null)
 
       firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-      .then(
-        user => {
-          commit('setUser', dispatch('createUserFromFirebaseAuth', user ))
-        }
-      )
+      //.then( (user) => {
+      //    const userData = dispatch('createUserFromFirebaseAuth', user )
+      //    commit('setUser', userData)
+      //  }
+      //)
       .then (() => {
         commit('app/setLoading', false, { root: true })
         commit('setError', null)
-        //router.push('/profile')
       })
       .catch(function(error) {
         commit('setError', error)
@@ -142,148 +155,110 @@ export default {
       })
     },
 
-    /**
-     * Internal Action to create a new user doc in user-db if there is none for the firebaseAuthUser
-     */
-    // eslint-disable-next-line
-    createUserFromFirebaseAuth: ( {commit}, firebaseAuthUser) => { 
-      const providerData = firebaseAuthUser.providerData[0]
-      const { displayName, photoURL, email } = providerData
-      const userDb = new UsersDB()
-      const user = {
-        displayName,
-        photoURL,
-        email,
-        userLevel: 'free',
-        isAdmin: false
-      }
-      return userDb.create(user, firebaseAuthUser.uid)
-    },
-
 
     /**
      * Action to update user data
      */
-    update: async ({ commit }, { data }) => {
+    
+    update: async ({ commit }, { data, image, oldPhotoURL, newPassword }) => {
       commit('app/setLoading', true, { root: true })
       commit('setError', null)
-      const userDb = new UsersDB()
-      await userDb.update(data)
-      .then (() => {
-        commit('setError', null)
-        commit('setUser', data)
-        commit('app/setLoading', false, { root: true })
-      })
-      .catch((error) =>{
-        commit('setError', error)
-        commit('app/setLoading', false, { root: true })
-        console.log("Error: auth/update:")
-        console.log(error)
-      })
+      
+      // upload all data except photo, but: photoURL of stored photo
+      async function uploadData(downloadURL) {
+        console.log('now uploading Data for ' + data.id)
+
+        const userDb = new UsersDB()
+        const updateData = {
+          ...data,
+          photoURL: downloadURL || ''
+        }
+        await userDb.update(updateData)
+        .then (() => {
+          console.log("updating profile")
+          firebase.auth().currentUser.updateProfile({
+            displayName: updateData.displayName,
+            photoURL: updateData.photoURL
+          })
+          console.log("updated profile")
+        })
+        .then (() => {
+          alert("update")
+          console.log("updating email" + updateData.email)
+          firebase.auth().currentUser.updateEmail(updateData.email)
+          console.log("updated email")
+        })
+        .then (() => {
+          if(newPassword && newPassword!='') {
+            firebase.auth().currentUser.updatePassword(newPassword)
+          }
+        })
+        .then (() => {
+          commit('setUser', updateData)
+          commit('setError', null)
+          commit('app/setLoading', false, { root: true })
+        })
+        .catch((error) =>{
+          commit('setError', error)
+          commit('app/setLoading', false, { root: true })
+          console.log("Error: auth/update:")
+          console.log(error)
+        })
+      }
+
+      // case: we have aphoto to upload. So we upload it and then we call uploadData()
+      if (image) {
+
+        const storageRef = firebase.storage().ref()
+        const fileExt = image.name.slice(image.name.lastIndexOf('.'))
+        const fileRef = storageRef.child('users/' + data.id + '.' + fileExt)
+
+        var uploadTask = fileRef.put(image)
+
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+          
+          function(snapshot) { // eslint-disable-line
+            //var progress = (snapshot.bytesTransferred / snapshot.totalBytes) *100
+            //console.log('Upload is ' + progress + '% done') 
+          },
+          function (error) { // eslint-disable-line
+            console.log('Upload error: ')
+            console.log(error)
+          },
+          function () {
+            uploadTask.snapshot.ref.getDownloadURL()
+            .then((downloadURL) => {
+              console.log('File available at ' + downloadURL)
+              uploadData(downloadURL)
+            })
+          }
+        )
+
+      }
+      // case: we have no photo (or we deleted it in the profile view)
+      else {
+        // case: we have an old photoURL in the store. In this case we delete the photo from the store prior to uploading data
+        if (oldPhotoURL) {
+          const storageRef = firebase.storage().ref()
+          const fileExt1 = oldPhotoURL.slice(oldPhotoURL.lastIndexOf('.'))
+          const fileExt = fileExt1.slice(0, fileExt1.indexOf('?'))
+          const fileRef = storageRef.child('users/' + data.id + '.' + fileExt)
+          // Delete the file
+          fileRef.delete().then(function() {
+            // File deleted successfully. Now we upload data
+            uploadData()
+          }).catch(function(error) {
+            // Uh-oh, an error occurred!
+            console.log("Error on deleting file: " + 'users/' + data.id + '.' + fileExt)
+            console.log(error)
+          });
+        }
+        else {
+          uploadData()
+        }
+      }
     },
 
-
-    /**
-     * Action to update user data
-     */
-    /*
-    updateUserData ({commit}, payload) {
-
-      
-      commit('app/setLoading', true)
-
-
-      var user = firebase.auth().currentUser
-
-      user.updateProfile({
-        displayName: "Jane Q. User",
-        photoURL: "https://example.com/jane-q-user/profile.jpg"
-      }).then(function() {
-        // Update successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-      
-      user.updateEmail("user@example.com").then(function() {
-        // Update successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-      
-      var user = firebase.auth().currentUser;
-      var newPassword = getASecureRandomPassword();
-      
-      user.updatePassword(newPassword).then(function() {
-        // Update successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-      
-
-
-      const updateUserObj = {}
-      let filename
-      let ext
-      console.log('PAYLOAD', payload)
-      if (payload.firstName) {
-        updateUserObj.firstName = payload.firstName
-      }
-      if (payload.lastName) {
-        updateUserObj.lastName = payload.lastName
-      }
-      if (payload.avatar) {
-        updateUserObj.avatar = payload.avatar
-      }
-      if (payload.currency) {
-        updateUserObj.currency = payload.currency
-      }
-      if (payload.location) {
-        updateUserObj.location = payload.location
-      }
-      if (payload.timeZone) {
-        updateUserObj.timeZone = payload.timeZone
-      }
-      if (payload.longitude) {
-        updateUserObj.longitude = payload.longitude
-      }
-      if (payload.latitude) {
-        updateUserObj.latitude = payload.latitude
-      }
-      if (payload.language) {
-        updateUserObj.language = payload.language
-      }
-      if (payload.updated) {
-        updateUserObj.updated = payload.updated
-      }
-      if (payload.image) {
-        filename = payload.image.name
-        ext = filename.slice(filename.lastIndexOf('.'))
-        updateUserObj.imageExt = ext
-      }
-
-      // eslint-disable-next-line
-      let imageUrl
-      let key = firebase.auth().currentUser.uid
-      let userRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
-      // eslint-disable-next-line
-      let setWithMerge = userRef.set({
-        ...updateUserObj
-      }, { merge: true })
-        .then(() => {
-          return firebase.storage().ref('users/' + key + ext).put(payload.image)
-        })
-      .then(() => {
-        commit('app/setLoading', false)
-        console.log('This is the push of the USER payload', payload)
-        commit('setUser', payload)
-      })
-      .catch(error => {
-        console.log(error)
-        commit('app/setLoading', false)
-      })
-      console.log('at the end of the loop')
-    }
-    */
   }
 }
 

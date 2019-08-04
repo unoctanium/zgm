@@ -11,26 +11,63 @@
           <v-toolbar-title>Profile</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
+
+           
+
             <v-btn text @click="closeDialog()" :disabled="!formValid">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
 
         <v-container>
+
+
+
           <v-layout justify-center>
             <v-img
-              v-if="user!=null && user.photoURL!=null"
-              :src="user.photoURL"
-              width="375"
-              max-width="375"
+              v-if="photoURL != ''"
+              :src="photoURL"
+              width="250"
+              max-width="250"
             >
             </v-img>
             <v-img
               v-else
               :src="require('@/assets/default-avatar.jpg')"
-              width="375"
-              max-width="375"
+              width="250"
+              max-width="250"
             >
             </v-img>
+
+            
+            <v-btn 
+              _raised 
+              _class="primary" 
+              icon
+              @click="onPickFile"
+            >
+              <v-icon>cloud_upload</v-icon>
+              
+            </v-btn>
+
+            <v-btn 
+              _raised 
+              _class="primary" 
+              icon
+              @click="onDeleteFile"
+            >
+              <v-icon>delete</v-icon>
+              
+            </v-btn>
+            
+            <input 
+              type="file" 
+              style="display: none" 
+              ref="fileInput" 
+              accept="image/*"
+              @change="onFilePicked"
+            >
+
+
           </v-layout>
           
         </v-container>
@@ -38,13 +75,14 @@
 
         <v-list>
           <v-subheader>Account data</v-subheader>
+
           <v-list-item>
             <v-list-item-icon>
               <v-icon color="indigo">person</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-text-field
-                v-model="updatedUser.displayName"
+                v-model="displayName"
                 _rules="nameRules"
                 counter="20"
                 label="Display Name"
@@ -59,7 +97,7 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-text-field
-                v-model="updatedUser.phone"
+                v-model="phone"
                 _rules="phoneRules"
                 counter="20"
                 label="Phone"
@@ -83,7 +121,7 @@
             </v-list-item-icon>
             <v-list-item-content>
               <v-text-field
-                v-model="updatedUser.email"
+                v-model="email"
                 _rules="emailRules"
                 label="E-mail"
                 _required
@@ -99,7 +137,7 @@
               <v-text-field
                 name="password"
                 label="Password"
-                v-model="updatedUser.password"
+                v-model="password"
                 type="password"
               ></v-text-field>
             </v-list-item-content>
@@ -113,7 +151,7 @@
               <v-text-field
                 name="confirmPassword"
                 label="Confirm Password"
-                v-model="updatedUser.confirmPassword"
+                v-model="confirmPassword"
                 type="password"
                 _rules="[comparePasswords]"
               ></v-text-field>
@@ -133,31 +171,26 @@
   
 </template>
 
-
 <script>
-import {mapState, mapActions} from 'vuex'
-import { cloneDeep } from 'lodash'
+import {mapActions, mapState} from 'vuex'
 
 export default {
   name: "Profile",
   components: {
   },
   props: {
-    value: Boolean
+    value: Boolean,
   },
   data () {
     return {
       formValid: true,
-      updatedUser: 
-      {
-        photoURL: null,
-        displayName: null,
-        email: null,
-        phone: null,
-        userLevel: null,
-        password: null,
-        confirmPassword: null
-      },
+      email: '', 
+      displayName: '', 
+      photoURL: '',
+      profileImage: null,
+      phone: '',
+      password: '',
+      confirmPassword: ''
     }
   },
   computed: {
@@ -172,17 +205,11 @@ export default {
     ...mapState('auth', [
       'user'
     ]),
+   
 
   },
-  mounted: function() {
-    this.updatedUser.photoURL = this.user.photoURL || ''
-    this.updatedUser.displayName = this.user.displayName  || ''
-    this.updatedUser.email = this.user.email  || ''
-    this.updatedUser.phone = this.user.phone  || ''
-    this.updatedUser.userLevel = this.user.userLevel  || ''
-    this.updatedUser.password = ''
-    this.updatedUser.confirmPassword = ''
-    console.log(this.user)
+  created() {
+    this.initDialog()
   },
   methods: {
 
@@ -190,21 +217,58 @@ export default {
       'update'
     ]),
 
+    initDialog() {
+      this.email = this.user.email
+      this.displayName = this.user.displayName
+      this.photoURL = this.user.photoURL
+      this.phone = this.user.phone
+    },
+
     cancelDialog() {
       this.dialog = false
+      //console.log("CANCEL")
+      this.initDialog()
     },
 
     closeDialog() {
       this.dialog = false
-      var clonedData = cloneDeep(this.user)
-      clonedData.photoURL = this.updatedUser.photoURL
-      clonedData.displayName = this.updatedUser.displayName
-      clonedData.email = this.updatedUser.email
-      clonedData.phone = this.updatedUser.phone
-      this.update( { data: clonedData } )
+      const clonedData = {
+        id : this.user.id,
+        email: this.email,
+        displayName: this.displayName,
+        phone: this.phone,
+        userLevel: this.user.userLevel,
+        isAdmin: this.user.isAdmin
+      }
+      this.update( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL, newPassword: this.password } )
     },
 
+    onPickFile() {
+      this.$refs.fileInput.click()
+    },
+
+    onDeleteFile() {
+      this.photoURL = ''
+      this.profileImage = null
+    },
+
+    onFilePicked(event) {
+      const files = event.target.files
+      let filename = files[0].name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert ('Please enter a valid file!')
+      }
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+        this.photoURL = fileReader.result
+      })
+      fileReader.readAsDataURL(files[0])
+      this.profileImage = files[0]
+    }
+
+      
   }
+
 }
 </script>
 

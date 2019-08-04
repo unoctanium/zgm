@@ -101,10 +101,10 @@ export default {
   methods: {
     ...mapActions('auth', ['signIn', 'resetError']),
     
-    async onSignin(event) {
+    onSignin(event) {
       event.preventDefault()
       event.stopPropagation()
-      await this.signIn ( { email:this.email, password:this.password })
+      this.signIn ( { email:this.email, password:this.password })
     }
 
   }
