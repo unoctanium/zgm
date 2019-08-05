@@ -48,8 +48,7 @@ export default {
           displayName: displayName || '',
           photoURL: photoURL || '',
           phone: '',
-          userLevel: 'free',
-          isAdmin: false
+          userLevel: 'guest'
         }
         const userProfile = await new UsersDB().create(user, firebaseAuthUser.uid)
         commit('setUser', userProfile)
