@@ -1,6 +1,11 @@
 
 <template>
   <div>
+    <v-form
+      ref="form"
+      v-model="formValid"
+      lazy-validation
+    >
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" _scrollable>
 
       <v-card>
@@ -86,7 +91,7 @@
             <v-list-item-content>
               <v-text-field
                 v-model="displayName"
-                _rules="nameRules"
+                :rules="[rules.inputRequired]"
                 counter="20"
                 label="Display Name"
                 prepend-icon="person"
@@ -100,7 +105,7 @@
             <v-list-item-content>
               <v-text-field
                 v-model="phone"
-                _rules="phoneRules"
+                :rules="[rules.max20]"
                 counter="20"
                 label="Phone"
                 prepend-icon="phone"
@@ -159,9 +164,15 @@
 
       </v-card>
     </v-dialog>
+    </v-form>
 
     <!-- EDIT EMAIL DIALOG -->
     
+    <v-form
+      ref="emailForm"
+      v-model="emailFormValid"
+      lazy-validation
+    >
     <v-dialog
       v-model="emailDialog"
       fullscreen
@@ -191,7 +202,7 @@
             <v-list-item-content>
               <v-text-field
                 v-model="changedEmail"
-                _rules="newEmailRules"
+                :rules="[rules.inputRequired, rules.emailFormat]"
                 counter="20"
                 label="New E-Mail"
                 prepend-icon="email"
@@ -204,10 +215,16 @@
         </v-list>
       </v-card>
     </v-dialog>
+    </v-form>
 
 
     <!-- EDIT PASSWORD DIALOG -->
     
+    <v-form
+      ref="passwordForm"
+      v-model="passwordFormValid"
+      lazy-validation
+    >
     <v-dialog
       v-model="passwordDialog"
       fullscreen
@@ -237,7 +254,7 @@
             <v-list-item-content>
               <v-text-field
                 v-model="changedPassword"
-                _rules="newPasswordRules"
+                :rules="[rules.inputRequired, comparePasswords]"
                 counter="20"
                 label="New Password"
                 prepend-icon="password"
@@ -251,12 +268,12 @@
             <v-list-item-content>
               <v-text-field
                 v-model="confirmPassword"
-                _rules="[comparePasswords]"
+                _rules=newPasswordRules
                 counter="20"
                 label="Confirm Password"
                 prepend-icon="password"
                 clearable
-                required
+                _required
                 type="password"
               ></v-text-field>
             </v-list-item-content>
@@ -264,6 +281,7 @@
         </v-list>
       </v-card>
     </v-dialog>
+    </v-form>
 
 
   </div>
@@ -282,8 +300,8 @@ export default {
   data () {
     return {
       formValid: true,
-      emailFormValid: true,
-      passwordFormValid: true,
+      emailFormValid: false,
+      passwordFormValid: false,
       photoURL: '',
       profileImage: null,
       email: '', 
@@ -295,7 +313,24 @@ export default {
       passwordDialog: false,
       changedEmail: '',
       changedPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      rules: {
+        inputRequired: (v) => !!v || "The input is required",
+        emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
+        max20: (v) => v && v.length <= 20 || 'The Input must be less than 20 characters',
+        min6: (v) => v && v.length >= 6 || 'The Input must be at least 6 characters'
+      },
+      /*
+      displayNameRules: [
+        (v) => !!v || "The input is required",
+        //(v) => v && v.length <= 20 || 'The Input must be less than 20 characters'
+      ],
+      phoneRules: [ (v) => v && v.length <= 20 || 'The Input must be less than 20 characters' ],
+      newEmailRules: [
+        (v) => !!v || "The Input is required",
+        (v) => /.+@.+/.test(v) || "Input must be valid E-Mail"
+      ],
+      */
     }
   },
   computed: {
@@ -310,6 +345,18 @@ export default {
     ...mapState('auth', [
       'user'
     ]),
+    comparePasswords() {
+      return (this.changedPassword !== this.confirmPassword ? "Passwords don't match" : '' )
+    }
+    /*
+    newPasswordRules() {
+      return (
+      [
+        (v) => !!v || 'This input is required',
+        (v) => v && v.length >= 8 || 'The Input must be at least characters',
+        (v) => (v == this.confirmPassword) || "Passwords don't match",
+      ] )
+    },*/
    
 
   },
@@ -319,7 +366,7 @@ export default {
   methods: {
 
     ...mapActions('auth', [
-      'update'
+      'updateProfile', 'updateEmail', 'updatePassword'
     ]),
 
     initDialog() {
@@ -336,7 +383,7 @@ export default {
       this.initDialog()
     },
 
-    closeDialog() {
+    async closeDialog() {
       this.dialog = false
       const clonedData = {
         id : this.user.id,
@@ -345,7 +392,7 @@ export default {
         phone: this.phone,
         userLevel: this.user.userLevel
       }
-      this.update( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL, newPassword: this.password } )
+      await this.updateProfile( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL } )
     },
 
     onPickFile() {
@@ -373,12 +420,44 @@ export default {
 
     
     closeEmailDialog() {
-      
+      var error = this.updateEmail( { payload: this.changedEmail } )
+        if(!error) {
+          console.log("1")
+          console.log(error)
+          this.emailDialog = false
+          this.email = this.changedEmail
+        }
+        else {
+          console.log("2")
+          console.log(error)
+          alert(error)
+        }
+      /*
+      .then( (error) => {
+        if(!error) {
+          console.log("1")
+          console.log(error)
+          this.emailDialog = false
+          this.email = this.changedEmail
+        }
+        else {
+          console.log("2")
+          console.log(error)
+          alert(error)
+        }
+      })
+      */
     },
 
-    closePasswordDialog() {
-      alert("JO")
-    }
+    async closePasswordDialog() {
+      this.updatePassword( { payload: this.changedPassword} )
+      .then(
+        this.passwordDialog = false
+      )
+      .catch( (error) => {
+        alert(error)
+      })
+    },
       
   }
 

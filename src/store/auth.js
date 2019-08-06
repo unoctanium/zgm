@@ -18,6 +18,13 @@ export default {
     setError (state, payload) {
       state.authError = payload
     },
+    changeUser (state, payload) {
+      if (payload.email && payload.email != '') { state.user.email = payload.email; console.log("changed email to " + payload.email) }
+      if (payload.displayName && payload.dsiplayName != '') { state.user.displayName = payload.displayName }
+      if (payload.phone && payload.phone != '') { state.user.phone = payload.phone }
+      if (payload.photoURL && payload.photoURL != '') { state.user.photoURL = payload.photoURL }
+      if (payload.userLevel && payload.userLevel != '') { state.user.userLevel = payload.email }
+    }
   },
   getters: {
     isUserLoggedIn: state => (!isNull(state.user)),
@@ -157,9 +164,8 @@ export default {
 
     /**
      * Action to update user data
-     */
-    
-    update: async ({ commit }, { data, image, oldPhotoURL, newPassword }) => {
+     */   
+    updateProfile: async ({ commit }, { data, image, oldPhotoURL }) => {
       commit('app/setLoading', true, { root: true })
       commit('setError', null)
       
@@ -174,7 +180,7 @@ export default {
         }
         await userDb.update(updateData)
         .then (() => {
-          console.log("updating profile")
+          //console.log("updating profile")
           firebase.auth().currentUser.updateProfile({
             displayName: updateData.displayName,
             photoURL: updateData.photoURL
@@ -182,18 +188,7 @@ export default {
           console.log("updated profile")
         })
         .then (() => {
-          alert("update")
-          console.log("updating email" + updateData.email)
-          firebase.auth().currentUser.updateEmail(updateData.email)
-          console.log("updated email")
-        })
-        .then (() => {
-          if(newPassword && newPassword!='') {
-            firebase.auth().currentUser.updatePassword(newPassword)
-          }
-        })
-        .then (() => {
-          commit('setUser', updateData)
+          commit('setUser', updateData )
           commit('setError', null)
           commit('app/setLoading', false, { root: true })
         })
@@ -250,12 +245,57 @@ export default {
             // Uh-oh, an error occurred!
             console.log("Error on deleting file: " + 'users/' + data.id + '.' + fileExt)
             console.log(error)
-          });
+          })
         }
         else {
           uploadData()
         }
       }
+    },
+
+    /**
+     * Action to update user eMail
+    */   
+    updateEmail: async ({ commit }, { payload })  => {
+      commit('app/setLoading', true, { root: true })
+      commit('setError', null)
+
+      console.log("updating email to:" + payload)
+      var user = firebase.auth().currentUser
+      await user.updateEmail(payload)
+      .then(function() {
+        commit('changeUser', { email: payload}) // set ONLY user but NOT data!!!
+        commit('setError', null)
+        commit('app/setLoading', false, { root: true })
+        console.log("updated email")
+        return (null)
+      })
+      .catch(function(error) {
+        console.log(error)
+        //alert(error)
+        //throw new Error(error);
+        return (error)
+      })
+    },
+
+
+    /**
+     * Action to update user eMail
+    */   
+    updatePassword: ({ commit }, { payload }) => {
+      commit('app/setLoading', true, { root: true })
+      commit('setError', null)
+      console.log("updating password to:" + payload)
+      var user = firebase.auth().currentUser
+      user.updatePassword(payload).then(function() {
+        commit('setError', null)
+        commit('app/setLoading', false, { root: true })
+        console.log("updated password")
+        //return true
+      }).catch(function(error) {
+        //console.log(error)
+        alert(error)
+      })
     },
 
   }
