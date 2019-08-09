@@ -368,7 +368,10 @@ export default {
     ...mapActions('auth', [
       'updateProfile', 'updateEmail', 'updatePassword'
     ]),
-
+    ...mapActions('userProfileModule', [
+      'uploadPhoto'
+    ]),
+    
     initDialog() {
       this.email = this.user.email
       this.displayName = this.user.displayName
