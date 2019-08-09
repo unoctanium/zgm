@@ -42,15 +42,23 @@ export const routes = [
     path: "/404",
     name: "not-found",
     meta: { title: "Not Found" },
-    component: () => import(/* webpackChunkName: "errors-404" */ "@/views/error/NotFound.vue")
+    component: () => import(/* webpackChunkName: "error-404" */ "@/views/error/NotFound.vue")
   },
 
   {
     path: "/500",
     name: "server-error",
     meta: { title: "Server Error" },
-    component: () => import(/* webpackChunkName: "errors-500" */ "@/views/error/ServerError.vue")
+    component: () => import(/* webpackChunkName: "error-500" */ "@/views/error/ServerError.vue")
   },
+
+  {
+    path: "/error",
+    name: "error",
+    meta: { title: "Error" },
+    component: () => import(/* webpackChunkName: "error-general" */ "@/views/error/GeneralError.vue")
+  },
+
 
   {
     path: "/",

@@ -16,8 +16,8 @@ export default {
     */
   },
   mutations: {
-    setLoading: (state, value) => (state.loading = value),
-    setNetworkOnline: (state, value) => (state.networkOnLine = value),
+    SET_LOADING: (state, value) => (state.loading = value),
+    SET_NETWORK_ONLINE: (state, value) => (state.networkOnLine = value),
     /*
     setSWRegistrationForNewContent: (state, value) => (state.SWRegistrationForNewContent = value),
     setShowAddToHomeScreenModalForApple: (state, value) => (state.showAddToHomeScreenModalForApple = value),
@@ -25,7 +25,15 @@ export default {
     */
   },
   actions: {
-    
+
+    setLoading: ({ commit }, isLoading) => {
+      commit('SET_LOADING',isLoading)
+    },
+
+    setNetworkOnline: ({ commit }, payload) => {
+      commit('SET_NETWORK_ONLINE',payload)
+    },
+
     /**
     * Closes "add to home screen" modal for apple
     */

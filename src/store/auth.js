@@ -1,109 +1,147 @@
-import firebase from 'firebase/app'
-import 'firebase/storage' 
+import { Firebase, initFirebase } from '@/firebase/init.js' // eslint-disable-line
+//import firebase from 'firebase/app'
 
 import router from '@/router'
-import UsersDB from '@/firebase/users-db'
-import { isNull } from "@/util"
+import store from "@/store"
 
 export default {
   namespaced: true,  
   state: {
-    user: null,
-    authError: null
+    userId: null,
+    authError: ''
   },
   mutations: {
-    setUser (state, payload) {
-      state.user = payload
-    },
-    setError (state, payload) {
-      state.authError = payload
-    },
-    changeUser (state, payload) {
-      if (payload.email && payload.email != '') { state.user.email = payload.email; console.log("changed email to " + payload.email) }
-      if (payload.displayName && payload.dsiplayName != '') { state.user.displayName = payload.displayName }
-      if (payload.phone && payload.phone != '') { state.user.phone = payload.phone }
-      if (payload.photoURL && payload.photoURL != '') { state.user.photoURL = payload.photoURL }
-      if (payload.userLevel && payload.userLevel != '') { state.user.userLevel = payload.email }
-    }
+    SET_USER_ID: (state, value) => (state.userId = value),
+    SET_ERROR: (state, value) => (state.authError = value),
   },
   getters: {
-    isUserLoggedIn: state => (!isNull(state.user)),
-    //getUser: state => (state.user)
+    getUserId: state => (state.userId),
+    getAuthError: state => (state.authError)
   },
   actions: {
+
+    /**
+    * Setd ID of current user
+    */
+    // setUserId: ({ commit }, payload) => {
+    // commit('SET_USER_ID',payload)
+    // },
 
     /**
     * Resets error message
     */
     resetError: ({ commit }) => {
-      commit('setError',null)
+      commit('SET_ERROR',null)
     },
 
     /**
      * Callback fired when user signed in
      */
-    signedin: async ({ commit }, firebaseAuthUser) => {
-      commit('app/setLoading', true, { root: true })
-      const userFromFirebase = await new UsersDB().read(firebaseAuthUser.uid)
-  
-      if (isNull(userFromFirebase)) {
+    signedin: ({ context }, user) => {
+
+      console.log(user)
+
+      const uid = user.uid
+      //store.dispatch('userProfileModule/openDBChannel')
+      //.catch(console.error)
+      // or fetchAndAdd
+      // or store.dispatch('userData/setUserId')
+      // or store.dispatch('userData/setUserId', id)
+
+      store.commit('SET_ERROR',null)
+      context.dispatch('app/SetLoading', true)
+      .then( () => { 
+        context.dispatch('userProfieModule/openDBChannel', { uid })
+      })
+      .then( () => {
+        console.log("SUCCESS signedIn from store.auth.js")
+        context.commit('SET_USER_ID', uid)
+        context.dispatch('app/SetLoading', false)
+      })
+      .catch( (error) => {
+        console.log("ERROR signedIn from store.auth.js")
+        console.log(error)
+        context.commit('SET_USER_ID', undefined)
+        context.commit('SET_ERROR',error)
+        context.dispatch('app/SetLoading', false)
+      })
+
+      /*
+      if (emptyDoc) {
         // New User: fill profile data
         const providerData = firebaseAuthUser.providerData[0]
         const { displayName, photoURL, email } = providerData
-        const user = {
+        const newUserData = {
           email,
           displayName: displayName || '',
           photoURL: photoURL || '',
           phone: '',
           userLevel: 'guest'
         }
-        const userProfile = await new UsersDB().create(user, firebaseAuthUser.uid)
-        commit('setUser', userProfile)
+        store.dispatch('userProfieModule/patch', newUserData)
       }
-      else {
-        // existing user
-        commit('setUser', userFromFirebase)
-      }
+      */
 
-      // get all other personal data
+      // TODO: @Odo: get all other personal data
       // dispatch('products/getUserProducts', null, { root: true })
 
-      commit('app/setLoading', false, { root: true })
+      //commit('app/setLoading', false, { root: true })
     },
 
     /**
      * Callback fired when user signed out
      */
-    signedout: ({ commit }) => {
-      commit('setUser', null)
+    signedout: ({ context }) => {
       
-      // set all other personal data null
-      //commit('products/setProducts', null, { root: true })
-  
-      const currentRouter = router.app.$route
-      if (currentRouter.meta && currentRouter.meta.authRequired) {
-        router.push('/auth/signin')
-      }
+      // set user data null
+      //commit('setUser', null)
+      context.commit('SET_ERROR',null)
+      context.dispatch('app/SetLoading', true)
+      .then( () => { 
+        context.dispatch('userProfileModule/closeDBChannel', {clearModule: true})
+      })      
+      .then( () => {
+        // TODO: @ODO set all other personal data null
+
+        console.log("SUCCESS signedOut from store.auth.js")
+        context.commit('SET_USER_ID', undefined)
+        context.dispatch('app/SetLoading', false)
+
+        const currentRouter = router.app.$route
+        if (currentRouter.meta && currentRouter.meta.authRequired) {
+          router.push('/auth/signin')
+        }
+
+        context.dispatch('app/SetLoading', false)
+      })
+      .catch( (error) => {
+        console.log("ERROR signedOut from store.auth.js")
+        console.log(error)
+        context.commit('SET_ERROR',error)
+        context.commit('SET_USER_ID', undefined)
+        context.dispatch('app/SetLoading', false)
+      })
+
+      
+ 
     },
 
 
     /**
      * Action to sign user in
      */
-    signIn: async ({ commit }, { email, password }) => {
-      commit('app/setLoading', true, { root: true })
-      commit('setUser', null)
-      commit('setError', null)
+    signIn: ({ context }, { email, password }) => {
+      context.dispatch('app/SetLoading', true)
+      context.commit('SET_ERROR', null)
 
-      firebase.auth().signInWithEmailAndPassword(email, password)
+      Firebase.auth().signInWithEmailAndPassword(email, password)
       .then (() => {
-        commit('setError', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', null)
+        context.dispatch('app/SetLoading', false)
       })
       .catch((error) =>{
-        commit('setError', error)
-        commit('setUser', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', error)
+        context.dispatch('app/SetLoading', false)
         //console.log("Error: auth/signIn:")
         //console.log(error)
       })
@@ -113,21 +151,18 @@ export default {
     /**
      * Action to sign user out
      */
-    signOut: async ({ commit }) => {
-      commit('app/setLoading', true, { root: true })
-      commit('setUser', null)
-      commit('setError', null)
+    signOut: ({ context }) => {
+      context.dispatch('app/SetLoading', true)
+      context.commit('SET_ERROR', null)
 
-      firebase.auth().signOut()
+      Firebase.auth().signOut()
       .then (() => {
-        commit('setUser', null)
-        commit('setError', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', null)
+        context.dispatch('app/SetLoading', false)
       })
       .catch((error) =>{
-        commit('setError', error)
-        commit('setUser', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', error)
+        context.dispatch('app/SetLoading', false)
         //console.log("Error: auth/signOut:")
         //console.log(error)
       })
@@ -137,136 +172,45 @@ export default {
     /**
      * Action to sign user up
      */
-    signUp: async ({commit }, payload) => {
-      commit('app/setLoading', true, { root: true })
-      commit('setUser', null)
-      commit('setError', null)
+    signUp: ({context }, payload) => {
+      context.dispatch('app/SetLoading', true)
+      context.commit('SET_ERROR', null)
 
-      firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
+      Firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
       //.then( (user) => {
       //    const userData = dispatch('createUserFromFirebaseAuth', user )
       //    commit('setUser', userData)
       //  }
       //)
       .then (() => {
-        commit('app/setLoading', false, { root: true })
-        commit('setError', null)
+        context.dispatch('app/SetLoading', false)
+        context.commit('SET_ERROR', null)
       })
       .catch(function(error) {
-        commit('setError', error)
-        commit('setUser', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', error)
+        context.dispatch('app/SetLoading', false)
         //console.log("Error: auth/signUp:")
         //console.log(error)
       })
     },
 
 
-    /**
-     * Action to update user data
-     */   
-    updateProfile: async ({ commit }, { data, image, oldPhotoURL }) => {
-      commit('app/setLoading', true, { root: true })
-      commit('setError', null)
-      
-      // upload all data except photo, but: photoURL of stored photo
-      async function uploadData(downloadURL) {
-        console.log('now uploading Data for ' + data.id)
-
-        const userDb = new UsersDB()
-        const updateData = {
-          ...data,
-          photoURL: downloadURL || ''
-        }
-        await userDb.update(updateData)
-        .then (() => {
-          //console.log("updating profile")
-          firebase.auth().currentUser.updateProfile({
-            displayName: updateData.displayName,
-            photoURL: updateData.photoURL
-          })
-          console.log("updated profile")
-        })
-        .then (() => {
-          commit('setUser', updateData )
-          commit('setError', null)
-          commit('app/setLoading', false, { root: true })
-        })
-        .catch((error) =>{
-          commit('setError', error)
-          commit('app/setLoading', false, { root: true })
-          console.log("Error: auth/update:")
-          console.log(error)
-        })
-      }
-
-      // case: we have aphoto to upload. So we upload it and then we call uploadData()
-      if (image) {
-
-        const storageRef = firebase.storage().ref()
-        const fileExt = image.name.slice(image.name.lastIndexOf('.'))
-        const fileRef = storageRef.child('users/' + data.id + '.' + fileExt)
-
-        var uploadTask = fileRef.put(image)
-
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-          
-          function(snapshot) { // eslint-disable-line
-            //var progress = (snapshot.bytesTransferred / snapshot.totalBytes) *100
-            //console.log('Upload is ' + progress + '% done') 
-          },
-          function (error) { // eslint-disable-line
-            console.log('Upload error: ')
-            console.log(error)
-          },
-          function () {
-            uploadTask.snapshot.ref.getDownloadURL()
-            .then((downloadURL) => {
-              console.log('File available at ' + downloadURL)
-              uploadData(downloadURL)
-            })
-          }
-        )
-
-      }
-      // case: we have no photo (or we deleted it in the profile view)
-      else {
-        // case: we have an old photoURL in the store. In this case we delete the photo from the store prior to uploading data
-        if (oldPhotoURL) {
-          const storageRef = firebase.storage().ref()
-          const fileExt1 = oldPhotoURL.slice(oldPhotoURL.lastIndexOf('.'))
-          const fileExt = fileExt1.slice(0, fileExt1.indexOf('?'))
-          const fileRef = storageRef.child('users/' + data.id + '.' + fileExt)
-          // Delete the file
-          fileRef.delete().then(function() {
-            // File deleted successfully. Now we upload data
-            uploadData()
-          }).catch(function(error) {
-            // Uh-oh, an error occurred!
-            console.log("Error on deleting file: " + 'users/' + data.id + '.' + fileExt)
-            console.log(error)
-          })
-        }
-        else {
-          uploadData()
-        }
-      }
-    },
 
     /**
      * Action to update user eMail
     */   
-    updateEmail: async ({ commit }, { payload })  => {
-      commit('app/setLoading', true, { root: true })
-      commit('setError', null)
+    updateEmail: async ({ context }, { payload })  => {
+      context.dispatch('app/SetLoading', true)
+      context.commit('SET_ERROR', null)
 
-      console.log("updating email to:" + payload)
-      var user = firebase.auth().currentUser
+      //console.log("updating email to:" + payload)
+      
+      var user = Firebase.auth().currentUser
       await user.updateEmail(payload)
       .then(function() {
-        commit('changeUser', { email: payload}) // set ONLY user but NOT data!!!
-        commit('setError', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('changeUser', { email: payload}) // set ONLY user but NOT data!!!
+        context.commit('SET_ERROR', null)
+        context.dispatch('app/SetLoading', false)
         console.log("updated email")
         return (null)
       })
@@ -274,26 +218,30 @@ export default {
         console.log(error)
         //alert(error)
         //throw new Error(error);
+        context.commit('SET_ERROR', error)
+        context.dispatch('app/SetLoading', false)
         return (error)
       })
     },
 
 
     /**
-     * Action to update user eMail
+     * Action to update user password
     */   
-    updatePassword: ({ commit }, { payload }) => {
-      commit('app/setLoading', true, { root: true })
-      commit('setError', null)
+    updatePassword: ({ context }, { payload }) => {
+      context.dispatch('app/SetLoading', true)
+      context.commit('SET_ERROR', null)
       console.log("updating password to:" + payload)
-      var user = firebase.auth().currentUser
+      var user = Firebase.auth().currentUser
       user.updatePassword(payload).then(function() {
-        commit('setError', null)
-        commit('app/setLoading', false, { root: true })
+        context.commit('SET_ERROR', null)
+        context.dispatch('app/SetLoading', false)
         console.log("updated password")
         //return true
       }).catch(function(error) {
         //console.log(error)
+        context.commit('SET_ERROR', error)
+        context.dispatch('app/SetLoading', false)
         alert(error)
       })
     },

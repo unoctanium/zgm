@@ -24,7 +24,8 @@
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuetify": "^2.0.3",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "vuex-easy-firestore": "^1.34.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.0",

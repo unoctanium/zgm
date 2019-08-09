@@ -8,7 +8,7 @@
       </div>
       
       <!-- Loader -->
-      <div v-show="user === undefined">Authenticating...</div>
+      <div v-show="userId === undefined">Authenticating...</div>
 
       <!-- Offline instruction -->
       <div v-show="!networkOnLine" data-test="offline-instruction">
@@ -27,16 +27,21 @@
           id="email"
           v-model="email"
           type="email"
+          autocomplete="email"
+          :rules="[rules.required, rules.emailFormat]"
           required
         ></v-text-field>
         <v-text-field
-          append-icon="lock"
+          v-model="password"
           name="password"
           label="Password"
           id="password"
-          v-model="password"
-          type="password"
+          autocomplete="password"
+          :append-icon="passwordVisible ? 'visibility' : 'visibility_off'"
+          :type="passwordVisible ? 'text' : 'password'"
+          :rules="[rules.required, rules.min]"
           required
+          @click:append="passwordVisible = !passwordVisible"
         ></v-text-field>
         <div class="login-btn">
           <v-spacer></v-spacer>
@@ -72,12 +77,24 @@ export default {
     return {
       email: '',
       password: '',
-      formValid: true
+      formValid: true,
+      passwordVisible: false,
+      rules: {
+        required: value => !!value || 'Required.',
+        min: v => v.length >= 8 || 'Min 8 characters',
+        emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
+      },
+      // userId: null,
+      // authError: null,
+      // networkOnLine: null,
+      // appTitle: null,
+      // appShortTitle: null
     }
   },
   computed: {
-    ...mapState('auth', ['user', 'authError']),
+    ...mapState('auth', ['userId', 'authError']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
+ 
     nextRoute () {
       return this.$route.query.redirectUrl || '/'
     }
@@ -86,9 +103,9 @@ export default {
     this.resetError()
   },
   watch: {
-    user: {
-      handler(user) {
-        if (user!=null) {
+    userId: {
+      handler(userId) {
+        if (userId!=null && userId!=undefined) {
           const redirectUrl = (this.$route.query.redirectUrl == null)
             ? '/dashboard'
             : this.$route.query.redirectUrl
