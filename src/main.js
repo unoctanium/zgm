@@ -23,7 +23,7 @@ new Vue({
   // initFirebase
   initFirebase()
   .then(() => {    
-//    registerFirebaseAuthStateChanged()
+    registerFirebaseAuthStateChanged()
   })
   .catch(error => {
     // take user to a page stating an error occurred
@@ -32,9 +32,6 @@ new Vue({
     console.log(error)
     router.push('/error')
   })
-  registerFirebaseAuthStateChanged()
-  
-
 
     
 

@@ -2,7 +2,7 @@ import { Firebase, initFirebase } from '@/firebase/init.js' // eslint-disable-li
 //import firebase from 'firebase/app'
 
 import router from '@/router'
-import store from "@/store"
+//import store from "@/store"
 
 export default {
   namespaced: true,  
@@ -37,7 +37,7 @@ export default {
     /**
      * Callback fired when user signed in
      */
-    signedin: ({ context }, user) => {
+    signedin: ({ commit, dispatch }, user) => {
 
       console.log(user)
 
@@ -48,22 +48,22 @@ export default {
       // or store.dispatch('userData/setUserId')
       // or store.dispatch('userData/setUserId', id)
 
-      store.commit('SET_ERROR',null)
-      context.dispatch('app/SetLoading', true)
+      commit('SET_ERROR',null)
+      dispatch('app/setLoading', true, { root: true })
       .then( () => { 
-        context.dispatch('userProfieModule/openDBChannel', { uid })
+        dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
       })
       .then( () => {
         console.log("SUCCESS signedIn from store.auth.js")
-        context.commit('SET_USER_ID', uid)
-        context.dispatch('app/SetLoading', false)
+        commit('SET_USER_ID', uid)
+        dispatch('app/SetLoading', false, { root: true })
       })
       .catch( (error) => {
         console.log("ERROR signedIn from store.auth.js")
         console.log(error)
-        context.commit('SET_USER_ID', undefined)
-        context.commit('SET_ERROR',error)
-        context.dispatch('app/SetLoading', false)
+        commit('SET_USER_ID', undefined)
+        commit('SET_ERROR',error)
+        dispatch('app/setLoading', false, { root: true })
       })
 
       /*
