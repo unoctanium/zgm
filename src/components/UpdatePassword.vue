@@ -36,6 +36,11 @@
         <!-- Error-Message -->
         <!--<p v-if="errorMessage">{{ errorMessage }}</p>-->
 
+        <!-- Progress Overlay -->
+        <v-overlay :value="progressOverlay">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+
         <v-card-text>
           <v-text-field
             v-model="oldPassword"
@@ -50,7 +55,7 @@
           ></v-text-field>
           <v-text-field
             v-model="newPassword"
-            name="mewPassword"
+            name="newPassword"
             label="New Password"
             id="newPassword"
             autocomplete="password"
@@ -97,6 +102,7 @@ export default {
         min: v => v.length >= 6 || 'Min 6 characters',
         comparePasswords: (v) => v==this.newPassword || "Passwords do not mactch"
       },
+      progressOverlay: false
     }
   },
   computed: {
@@ -134,6 +140,7 @@ export default {
     ]),
 
     initDialog() {
+      this.currentEmail = this.user.email
       this.oldPassword = ''
       this.newPassword = ''
       this.confirmPassword = ''
@@ -145,20 +152,11 @@ export default {
     },
 
     closeDialog() {
+      this.progressOverlay = true
+      this.updatePassword( { currentEmail: this.currentEmail, currentPassword: this.oldPassword, newPassword: this.newPassword} )
+      this.progressOverlay = false
       this.dialog = false
     },
-
-    /*
-    async closePasswordDialog() {
-      this.updatePassword( { payload: this.changedPassword} )
-      .then(
-        this.passwordDialog = false
-      )
-      .catch( (error) => {
-        alert(error)
-      })
-    },
-    */
 
   }
 }

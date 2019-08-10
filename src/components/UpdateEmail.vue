@@ -35,10 +35,16 @@
         <!-- Error-Message -->
         <!--<p v-if="errorMessage">{{ errorMessage }}</p>-->
 
+        <!-- Progress Overlay -->
+        <v-overlay :value="progressOverlay">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
+
+
         <v-card-text>
 
           <span>
-            Current E-Mail: {{ oldEmail }}
+            Current E-Mail: {{ currentEmail }}
           </span>
           
           <v-text-field
@@ -83,7 +89,7 @@ export default {
   },
   data () {
     return {
-      oldEmail: '',
+      currentEmail: '',
       newEmail: '',
       password: '',
       formValid: true,
@@ -93,6 +99,7 @@ export default {
         min: v => v.length >= 6 || 'Min 6 characters',
         emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
       },
+      progressOverlay: false
     }
   },
   computed: {
@@ -130,7 +137,7 @@ export default {
     ]),
 
     initDialog() {
-      this.oldEmail = this.user.email
+      this.currentEmail = this.user.email
       this.newEmail = ''
       this.password = ''
     },
@@ -141,43 +148,11 @@ export default {
     },
 
     closeDialog() {
+      this.progressOverlay = true
+      this.updateEmail( { currentEmail: this.currentEmail, newEmail: this.newEmail, currentPassword: this.password })
+      this.progressOverlay = false
       this.dialog = false
     },    
-
-/*
-    closeEmailDialog() {
-
-      var error = this.updateEmail( { payload: this.changedEmail } )
-        if(!error) {
-          console.log("1")
-          console.log(error)
-          this.emailDialog = false
-          this.email = this.changedEmail
-        }
-        else {
-          console.log("2")
-          console.log(error)
-          alert(error)
-        }
-      
-      .then( (error) => {
-        if(!error) {
-          console.log("1")
-          console.log(error)
-          this.emailDialog = false
-          this.email = this.changedEmail
-        }
-        else {
-          console.log("2")
-          console.log(error)
-          alert(error)
-        }
-      })
-      
-    },
-*/
-
-
   }
 }
 </script>

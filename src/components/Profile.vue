@@ -228,6 +228,10 @@ export default {
         }
       },
       immediate: true
+    },
+    value: function (newVal, oldVal) {
+      if (newVal && !oldVal)
+        this.initDialog()
     }
   },
   mounted() {

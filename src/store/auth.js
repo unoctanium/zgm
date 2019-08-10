@@ -196,28 +196,31 @@ export default {
     /**
      * Action to update user eMail
     */   
-    updateEmail: async ({ commit, dispatch }, { payload })  => {
-      dispatch('app/setLoading', true, { root: true })
-      commit('SET_ERROR', null)
+    updateEmail: ({ dispatch }, payload)  => {
+      //dispatch('app/setLoading', true, { root: true })
+      //commit('SET_ERROR', null)
 
-      //console.log("updating email to:" + payload)
+      console.log("updating email to:" + payload.newEmail + " with pw: " + payload.currentPassword)
       
-      var user = Firebase.auth().currentUser
-      await user.updateEmail(payload)
+      Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
       .then(function() {
-        commit('changeUser', { email: payload}) // set ONLY user but NOT data!!!
-        commit('SET_ERROR', null)
-        dispatch('app/setLoading', false, { root: true })
-        console.log("updated email")
-        return (null)
+        Firebase.auth().currentUser.updateEmail(payload.newEmail)
       })
+      .then(function() { 
+        dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
+      })
+      .then(function() {
+        return
+      })
+      //.then(function() {
+        //commit('SET_ERROR', null)
+        //dispatch('app/setLoading', false, { root: true })
+      //})
       .catch(function(error) {
-        console.log(error)
-        //alert(error)
-        //throw new Error(error);
-        commit('SET_ERROR', error)
-        dispatch('app/setLoading', false, { root: true })
-        return (error)
+        //console.log(error)
+        alert(error)
+        //commit('SET_ERROR', error)
+        //dispatch('app/setLoading', false, { root: true })
       })
     },
 
@@ -225,20 +228,28 @@ export default {
     /**
      * Action to update user password
     */   
-    updatePassword: ({ commit, dispatch }, { payload }) => {
-      dispatch('app/setLoading', true, { root: true })
-      commit('SET_ERROR', null)
-      console.log("updating password to:" + payload)
-      var user = Firebase.auth().currentUser
-      user.updatePassword(payload).then(function() {
-        commit('SET_ERROR', null)
-        dispatch('app/setLoading', false, { root: true })
-        console.log("updated password")
+    updatePassword: ( { dispatch}, payload ) => { // eslint-disable-line
+      //dispatch('app/setLoading', true, { root: true })
+      //commit('SET_ERROR', null)
+      console.log("updating password to:" + payload.newPassword)
+      
+      Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
+      .then(function() {
+        Firebase.auth().currentUser.updatePassword(payload.newPassword)
+      })
+      .then(function() {
+        return
+      })
+      //.then(function() {
+        //commit('SET_ERROR', null)
+        //dispatch('app/setLoading', false, { root: true })
+      //  console.log("updated password")
         //return true
-      }).catch(function(error) {
+      //})
+      .catch(function(error) {
         //console.log(error)
-        commit('SET_ERROR', error)
-        dispatch('app/setLoading', false, { root: true })
+        //commit('SET_ERROR', error)
+        //dispatch('app/setLoading', false, { root: true })
         alert(error)
       })
     },
