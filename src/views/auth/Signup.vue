@@ -31,26 +31,26 @@
           required
         ></v-text-field>
         <v-text-field
-          append-icon="lock"
+          v-model="password"
           name="password"
           label="Password"
-          autocomplete="password"
-          :rules="[rules.required, rules.min]"
           id="password"
-          v-model="password"
-          type="password"
+          autocomplete="password"
+          :append-icon="passwordVisible ? 'visibility' : 'visibility_off'"
+          :type="passwordVisible ? 'text' : 'password'"
+          :rules="[rules.required, rules.min]"
           required
         ></v-text-field>
         <v-text-field 
+          v-model="confirmPassword"
           name="confirmPassword"
           label="Confirm Password"
           id="confirmPassword"
-          v-model="confirmPassword"
-          :rules="[rules.required, rules.comparePasswords]"
-          type="password"
           autocomplete="password"
-          >
-        </v-text-field>
+          :append-icon="passwordVisible ? 'visibility' : 'visibility_off'"
+          :type="passwordVisible ? 'text' : 'password'"
+          :rules="[rules.required, rules.comparePasswords]"
+        ></v-text-field>
         <div class="login-btn">
           <v-spacer></v-spacer>
           <v-btn 
@@ -86,6 +86,7 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
+      passwordVisible: false,
       formValid: true,
       rules: {
         required: value => !!value || 'Required.',

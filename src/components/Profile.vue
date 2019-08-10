@@ -1,11 +1,10 @@
 
 <template>
-  <div>
-    <v-form
-      ref="form"
-      v-model="formValid"
-      lazy-validation
-    >
+  <v-form
+    ref="form"
+    v-model="formValid"
+    _lazy-validation
+  >
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" _scrollable>
 
       <v-card>
@@ -139,152 +138,12 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item>
-            <v-btn
-              block
-              color="primary"
-              @click="changedEmail=email; emailDialog=true"
-            >
-            Change E-Mail
-           </v-btn>
-          </v-list-item>
-
-          <v-list-item>
-            <v-btn
-              block
-              color="primary"
-              @click="changedPassword=''; confirmPassword=''; passwordDialog=true"
-            >
-            Change Password
-           </v-btn>
-          </v-list-item>
-
         </v-list>
         <v-divider></v-divider>
 
       </v-card>
     </v-dialog>
-    </v-form>
-
-    <!-- EDIT EMAIL DIALOG -->
-    
-    <v-form
-      ref="emailForm"
-      v-model="emailFormValid"
-      lazy-validation
-    >
-    <v-dialog
-      v-model="emailDialog"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      _scrollable
-    >
-      <v-card>
-        <v-toolbar>
-          <v-btn icon @click="emailDialog=false">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Change E-Mail</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn 
-              text 
-              @click="closeEmailDialog()" 
-              :disabled="!emailFormValid"
-            >
-              Save
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-list>
-          <v-list-item>
-            <v-list-item-content>
-              <v-text-field
-                v-model="changedEmail"
-                :rules="[rules.inputRequired, rules.emailFormat]"
-                counter="20"
-                label="New E-Mail"
-                prepend-icon="email"
-                clearable
-                required
-                type="email"
-              ></v-text-field>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </v-dialog>
-    </v-form>
-
-
-    <!-- EDIT PASSWORD DIALOG -->
-    
-    <v-form
-      ref="passwordForm"
-      v-model="passwordFormValid"
-      lazy-validation
-    >
-    <v-dialog
-      v-model="passwordDialog"
-      fullscreen
-      hide-overlay
-      transition="dialog-bottom-transition"
-      _scrollable
-    >
-      <v-card>
-        <v-toolbar>
-          <v-btn icon @click="passwordDialog=false">
-            <v-icon>close</v-icon>
-          </v-btn>
-          <v-toolbar-title>Change Password</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn 
-              text 
-              @click="closePasswordDialog()" 
-              :disabled="!passwordFormValid"
-            >
-              Save
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-list>
-          <v-list-item>
-            <v-list-item-content>
-              <v-text-field
-                v-model="changedPassword"
-                :rules="[rules.inputRequired, comparePasswords]"
-                counter="20"
-                label="New Password"
-                prepend-icon="password"
-                clearable
-                required
-                type="password"
-              ></v-text-field>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-text-field
-                v-model="confirmPassword"
-                _rules=newPasswordRules
-                counter="20"
-                label="Confirm Password"
-                prepend-icon="password"
-                clearable
-                _required
-                type="password"
-              ></v-text-field>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-card>
-    </v-dialog>
-    </v-form>
-
-
-  </div>
+  </v-form>
 </template>
 
 <script>
@@ -376,9 +235,6 @@ export default {
   },
   methods: {
 
-    ...mapActions('auth', [
-      'updateEmail', 'updatePassword'
-    ]),
     ...mapActions('userProfileModule', [
       'updateUserProfile'
     ]),
@@ -442,49 +298,9 @@ export default {
       this.profileImage = files[0]
     },
 
-    
-    closeEmailDialog() {
-      var error = this.updateEmail( { payload: this.changedEmail } )
-        if(!error) {
-          console.log("1")
-          console.log(error)
-          this.emailDialog = false
-          this.email = this.changedEmail
-        }
-        else {
-          console.log("2")
-          console.log(error)
-          alert(error)
-        }
-      /*
-      .then( (error) => {
-        if(!error) {
-          console.log("1")
-          console.log(error)
-          this.emailDialog = false
-          this.email = this.changedEmail
-        }
-        else {
-          console.log("2")
-          console.log(error)
-          alert(error)
-        }
-      })
-      */
-    },
 
-    async closePasswordDialog() {
-      this.updatePassword( { payload: this.changedPassword} )
-      .then(
-        this.passwordDialog = false
-      )
-      .catch( (error) => {
-        alert(error)
-      })
-    },
       
   }
-
 }
 </script>
 

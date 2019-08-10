@@ -138,7 +138,10 @@
     </v-menu>
     -->
     <settings v-model="settingsdialog"></settings>
-    <profile v-model="profiledialog" :profileUser="profileUser"></profile>
+    <profile v-model="profiledialog" ></profile>
+    <update-email v-model="emaildialog" ></update-email>
+    <update-password v-model="passworddialog" ></update-password>
+    
     <!--<profile v-model="profiledialog" :profileUser="profileUser"></profile>-->
 
   </v-app-bar>
@@ -152,6 +155,9 @@ import { mapState } from 'vuex'
 
 import Settings from "@/components/Settings"
 import Profile from "@/components/Profile"
+import UpdateEmail from "@/components/UpdateEmail"
+import UpdatePassword from "@/components/UpdatePassword"
+
 
 export default {
   name: "AppToolbar",
@@ -159,7 +165,9 @@ export default {
     // NotificationList
     // InstallPrompt
     Settings,
-    Profile
+    Profile,
+    UpdateEmail,
+    UpdatePassword
   },
   props: {
     title: {
@@ -177,6 +185,18 @@ export default {
           click: this.handleProfile
         },
         {
+          icon: "email",
+          href: "#",
+          title: "Change Login",
+          click: this.handleLogin
+        },
+        {
+          icon: "lock",
+          href: "#",
+          title: "Change Password",
+          click: this.handlePassword
+        },
+        {
           icon: "settings",
           href: "#",
           title: "Settings",
@@ -192,7 +212,10 @@ export default {
       refreshing: false,
       settingsdialog: false,
       profiledialog: false,
-      profileUser: null
+      emaildialog: false,
+      passworddialog: false
+
+      //profileUser: null
     }
   },
   computed: {
@@ -232,7 +255,15 @@ export default {
       //this.$router.push('/profile')
       this.profiledialog = true
       //this.profileUser = this.user
-    }
+    },
+    handleLogin() {
+      //this.$router.push('/settings')
+      this.emaildialog = true
+    },
+    handlePassword() {
+      //this.$router.push('/settings')
+      this.passworddialog = true
+    },
   }
 }
 </script>

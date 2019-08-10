@@ -18,7 +18,7 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form _lazy-validation v-model="formValid" ref="form" @submit="onSignin" @keyup.enter.native="onSignin">
+      <v-form _lazy-validation v-model="formValid" ref="signinForm" @submit="onSignin" @keyup.enter.native="onSignin">
         
         <v-text-field
           append-icon="person"
@@ -100,9 +100,9 @@ export default {
     }
   },
   mounted() {
-    //this.$refs.form.reset()
-    //this.$refs.form.validate()
-    //this.$refs.form.resetValidation()
+    //this.$refs.signinForm.reset()
+    //this.$refs.signinForm.validate()
+    //this.$refs.signinForm.resetValidation()
 
     this.resetError()
     //console.log(this.userId)
@@ -132,7 +132,7 @@ export default {
     onSignin(event) {
       event.preventDefault()
       event.stopPropagation()
-      //this.$refs.form.validate()
+      //this.$refs.signinForm.validate()
       this.signIn ( { email:this.email, password:this.password })
     }
 
