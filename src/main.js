@@ -7,9 +7,7 @@ import store from './store'
 import '@babel/polyfill'
 import './registerServiceWorker'
 import '@/util/handle-network-status'
-//import '@/firebase/init'
-//import '@/firebase/authentication'
-//import { isNull } from "@/util"
+
 import { initFirebase, registerFirebaseAuthStateChanged } from '@/firebase/init.js'
 
 Vue.config.productionTip = false
@@ -19,23 +17,18 @@ new Vue({
   store,
   vuetify,
   created()  {
-
-  // initFirebase
-  initFirebase()
-  .then(() => {    
-    registerFirebaseAuthStateChanged()
-  })
-  .catch(error => {
-    // take user to a page stating an error occurred
-    // (might be a connection error, or the app is open in another tab)
-    console.log("ERROR from store/index.js:")
-    console.log(error)
-    router.push('/error')
-  })
-
-    
-
+    // initFirebase
+    initFirebase()
+    .then(() => {    
+      registerFirebaseAuthStateChanged()
+    })
+    .catch(error => {
+      // take user to a page stating an error occurred
+      // (might be a connection error, or the app is open in another tab)
+      console.log("ERROR from store/index.js:")
+      console.log(error)
+      router.push('/error')
+    })
   },
   render: h => h(App)
 }).$mount('#app')
-

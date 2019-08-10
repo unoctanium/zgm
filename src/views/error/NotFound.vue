@@ -5,6 +5,7 @@
         <div class="text-md-center">
           <h1>404</h1>
           <h2 class="my-3 headline">Sorry, page not found</h2>
+          <!--<h3 class="my-3"> {{  }} </h3>-->
           <div>
             <v-btn color="primary" @click="goHome">Go Home</v-btn>
           </div>

@@ -53,6 +53,9 @@ export default {
       .then( () => { 
         dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
       })
+      .then( () => { 
+        dispatch('userProfileModule/initIfNew', { uid }, { root: true })
+      })
       .then( () => {
         console.log("SUCCESS signedIn from store.auth.js: " + uid)
         commit('SET_USER_ID', uid)
@@ -179,6 +182,9 @@ export default {
       //    commit('setUser', userData)
       //  }
       //)
+      // .then(() => {
+
+      // }
       .then (() => {
         dispatch('app/setLoading', false, { root: true })
         commit('SET_ERROR', null)
