@@ -35,7 +35,7 @@
 
               <v-layout justify-center>
                 <v-img
-                  v-if="photoURL != ''"
+                  v-if="photoURL != null"
                   :src="photoURL"
                   width="250"
                   max-width="250"
@@ -302,7 +302,7 @@ export default {
       formValid: true,
       emailFormValid: false,
       passwordFormValid: false,
-      photoURL: '',
+      photoURL: null,
       profileImage: null,
       email: '', 
       displayName: '', 
@@ -390,6 +390,7 @@ export default {
       this.photoURL = this.user.photoURL
       this.phone = this.user.phone,
       this.userLevel= this.user.userLevel
+      this.profileImage = null
     },
 
     cancelDialog() {
@@ -401,7 +402,7 @@ export default {
     closeDialog() {
       this.dialog = false
       const clonedData = {
-        //id : this.user.id,
+        id : this.user.id,
         email: this.email,
         displayName: this.displayName,
         phone: this.phone,
@@ -409,7 +410,13 @@ export default {
       }
         //dispatch('moduleName/patch', {status: 'awesome'})
       //this.patch(clonedData)
-      this.updateUserProfile( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL } )
+      const imageData = {
+        oldPhotoURL: this.user.photoURL,
+        newPhotoURL: this.photoURL,
+        newImage: this.profileImage
+      }
+      this.updateUserProfile( { data: clonedData, image: imageData } )
+      this.profileImage = null
     },
 
     onPickFile() {
@@ -417,7 +424,7 @@ export default {
     },
 
     onDeleteFile() {
-      this.photoURL = ''
+      this.photoURL = null
       this.profileImage = null
     },
 

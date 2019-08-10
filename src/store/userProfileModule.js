@@ -19,24 +19,25 @@ const userProfileModule = {
       /**
        * Action to update user data
        */   
-      updateUserProfile: async ({ dispatch }, { data, image, oldPhotoURL }) => {
+      updateUserProfile: async ({ dispatch, rootGetters }, { data, image }) => {
 
         //commit('app/setLoading' true, { root: true })
         console.log("data from updateUserProfile")
         console.log(data)
         console.log(image)
-        console.log(oldPhotoURL)
 
-        const id = data.id
+        const id = rootGetters['auth/getUserId']
+        console.log(id)
+
 
         // case: we have aphoto to upload. So we upload it and then we call uploadData()
-        if (image) {
+        if (image.newImage) {
   
           const storageRef = Firebase.storage().ref()
-          const fileExt = image.name.slice(image.name.lastIndexOf('.'))
+          const fileExt = image.newImage.name.slice(image.newImage.name.lastIndexOf('.'))
           const fileRef = storageRef.child('users/' + id + '.' + fileExt)
   
-          var uploadTask = fileRef.put(image)
+          var uploadTask = fileRef.put(image.newImage)
   
           uploadTask.on(Firebase.storage.TaskEvent.STATE_CHANGED,
             
@@ -52,38 +53,36 @@ const userProfileModule = {
               uploadTask.snapshot.ref.getDownloadURL()
               .then((downloadURL) => {
                 console.log('userProfileModule.js: File available at ' + downloadURL)
-                dispatch('userProfileModule/patch', { ...data, photoURL: downloadURL }) // payload needs an 'id' prop
+                dispatch('patch', { ...data, photoURL: downloadURL }) 
               })
             }
           )
   
         }
-        // case: we have no photo (or we deleted it in the profile view)
+        // case: we deleted photo it in the profile view
+        // we have an old photoURL in the store. In this case we delete the photo from the store prior to uploading data
+        else if (!image.newPhotoURL && image.oldPhotoURL) {
+ 
+          const storageRef = Firebase.storage().ref()
+          const fileExt1 = image.oldPhotoURL.slice(image.oldPhotoURL.lastIndexOf('.'))
+          const fileExt = fileExt1.slice(0, fileExt1.indexOf('?'))
+          const fileRef = storageRef.child('users/' + id + '.' + fileExt)
+          // Delete the file
+          fileRef.delete().then(function() {
+            // File deleted successfully. Now we upload data
+            dispatch('patch', { ...data, photoURL: null }) 
+          }).catch(function(error) {
+            // Uh-oh, an error occurred!
+            console.log("Error on deleting file: " + 'users/' + id + '.' + fileExt)
+            console.log(error)
+          })
+        }
+        // case: we didnt touch photo
         else {
-          // case: we have an old photoURL in the store. In this case we delete the photo from the store prior to uploading data
-          if (oldPhotoURL) {
-            const storageRef = Firebase.storage().ref()
-            const fileExt1 = oldPhotoURL.slice(oldPhotoURL.lastIndexOf('.'))
-            const fileExt = fileExt1.slice(0, fileExt1.indexOf('?'))
-            const fileRef = storageRef.child('users/' + id + '.' + fileExt)
-            // Delete the file
-            fileRef.delete().then(function() {
-              // File deleted successfully. Now we upload data
-              dispatch('userProfileModule/patch', { ...data, photoURL: null }) // payload needs an 'id' prop
-            }).catch(function(error) {
-              // Uh-oh, an error occurred!
-              console.log("Error on deleting file: " + 'users/' + id + '.' + fileExt)
-              console.log(error)
-            })
-          }
-          else {
-            dispatch('userProfileModule/patch', { ...data, photoURL: null }) // payload needs an 'id' prop
-          }
+          dispatch('patch', { ...data }) 
         }
       },
   
-
-
     },
   }
   
