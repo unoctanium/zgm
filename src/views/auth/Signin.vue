@@ -8,7 +8,7 @@
       </div>
       
       <!-- Loader -->
-      <div v-show="userId === undefined">Authenticating...</div>
+      <!--<div v-show="userId === undefined">Authenticating...</div>-->
 
       <!-- Offline instruction -->
       <div v-show="!networkOnLine" data-test="offline-instruction">
@@ -18,7 +18,7 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form lazy-validation @submit="onSignin" @keyup.enter.native="onSignin">
+      <v-form _lazy-validation v-model="formValid" ref="form" @submit="onSignin" @keyup.enter.native="onSignin">
         
         <v-text-field
           append-icon="person"
@@ -77,8 +77,8 @@ export default {
     return {
       email: '',
       password: '',
-      formValid: true,
       passwordVisible: false,
+      formValid: true,
       rules: {
         required: value => !!value || 'Required.',
         min: v => v.length >= 6 || 'Min 6 characters',
@@ -100,12 +100,23 @@ export default {
     }
   },
   mounted() {
+    //this.$refs.form.reset()
+    //this.$refs.form.validate()
+    //this.$refs.form.resetValidation()
+
     this.resetError()
+    //console.log(this.userId)
+    if (this.userId!=null && this.userId!=undefined) {
+      const redirectUrl = (this.$route.query.redirectUrl == null)
+        ? '/dashboard'
+        : this.$route.query.redirectUrl
+      this.$router.push(redirectUrl)
+    }
   },
   watch: {
     userId: {
       handler(userId) {
-        if (userId!=null && userId!=undefined) {
+        if (userId!=undefined) {
           const redirectUrl = (this.$route.query.redirectUrl == null)
             ? '/dashboard'
             : this.$route.query.redirectUrl
@@ -121,6 +132,7 @@ export default {
     onSignin(event) {
       event.preventDefault()
       event.stopPropagation()
+      //this.$refs.form.validate()
       this.signIn ( { email:this.email, password:this.password })
     }
 

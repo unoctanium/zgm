@@ -1,10 +1,11 @@
-import { Firebase, initFirebase } from '@/firebase/init.js' // eslint-disable-line
+import { Firebase  } from '@/firebase/init.js'
+import 'firebase/storage'
 
 const userProfileModule = {
     firestorePath: 'users/{userId}',
     firestoreRefType: 'doc', // or 'collection' or doc'
     moduleName: 'userProfileModule',
-    statePropName: 'data',
+    statePropName: 'user',
     namespaced: true, // automatically added
   
     // this object is your store module (will be added as '/myModule')
@@ -14,15 +15,20 @@ const userProfileModule = {
     mutations: {},
     actions: {
 
-    /**
-     * Action to update user data
-     */   
-    uploadPhoto: async ({ commit }, { id, image, oldPhotoURL }) => {
 
-        commit('app/setLoading', true, { root: true })
-        commit('setError', null)
-        
-        
+      /**
+       * Action to update user data
+       */   
+      updateUserProfile: async ({ dispatch }, { data, image, oldPhotoURL }) => {
+
+        //commit('app/setLoading' true, { root: true })
+        console.log("data from updateUserProfile")
+        console.log(data)
+        console.log(image)
+        console.log(oldPhotoURL)
+
+        const id = data.id
+
         // case: we have aphoto to upload. So we upload it and then we call uploadData()
         if (image) {
   
@@ -46,7 +52,7 @@ const userProfileModule = {
               uploadTask.snapshot.ref.getDownloadURL()
               .then((downloadURL) => {
                 console.log('userProfileModule.js: File available at ' + downloadURL)
-                this.dispatch('userProfileModule/patch', { id: id, photoURL: downloadURL }) // payload needs an 'id' prop
+                dispatch('userProfileModule/patch', { ...data, photoURL: downloadURL }) // payload needs an 'id' prop
               })
             }
           )
@@ -63,16 +69,16 @@ const userProfileModule = {
             // Delete the file
             fileRef.delete().then(function() {
               // File deleted successfully. Now we upload data
-              this.dispatch('userProfileModule/patch', { id: id, photoURL: null }) // payload needs an 'id' prop
+              dispatch('userProfileModule/patch', { ...data, photoURL: null }) // payload needs an 'id' prop
             }).catch(function(error) {
               // Uh-oh, an error occurred!
               console.log("Error on deleting file: " + 'users/' + id + '.' + fileExt)
               console.log(error)
             })
           }
-        //   else {
-        //     uploadData()
-        //   }
+          else {
+            dispatch('userProfileModule/patch', { ...data, photoURL: null }) // payload needs an 'id' prop
+          }
         }
       },
   

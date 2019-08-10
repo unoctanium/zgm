@@ -342,9 +342,10 @@ export default {
         this.$emit('input', value)
       }
     },
-    ...mapState('auth', [
+    ...mapState('userProfileModule', [
       'user'
     ]),
+
     comparePasswords() {
       return (this.changedPassword !== this.confirmPassword ? "Passwords don't match" : '' )
     }
@@ -360,19 +361,30 @@ export default {
    
 
   },
-  created() {
-    this.initDialog()
+  watch: {
+    user: {
+      handler(user) {
+        if (user.id!=undefined) {
+          this.initDialog()
+        }
+      },
+      immediate: true
+    }
+  },
+  mounted() {
+    //this.initDialog()
   },
   methods: {
 
     ...mapActions('auth', [
-      'updateProfile', 'updateEmail', 'updatePassword'
+      'updateEmail', 'updatePassword'
     ]),
     ...mapActions('userProfileModule', [
-      'uploadPhoto'
+      'updateUserProfile'
     ]),
     
     initDialog() {
+      console.log(this.user)
       this.email = this.user.email
       this.displayName = this.user.displayName
       this.photoURL = this.user.photoURL
@@ -386,16 +398,18 @@ export default {
       this.initDialog()
     },
 
-    async closeDialog() {
+    closeDialog() {
       this.dialog = false
       const clonedData = {
-        id : this.user.id,
+        //id : this.user.id,
         email: this.email,
         displayName: this.displayName,
         phone: this.phone,
-        userLevel: this.user.userLevel
+        //userLevel: this.user.userLevel
       }
-      await this.updateProfile( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL } )
+        //dispatch('moduleName/patch', {status: 'awesome'})
+      //this.patch(clonedData)
+      this.updateUserProfile( { data: clonedData, image: this.profileImage, oldPhotoURL: this.user.photoURL } )
     },
 
     onPickFile() {

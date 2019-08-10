@@ -7,7 +7,7 @@ import router from '@/router'
 export default {
   namespaced: true,  
   state: {
-    userId: null,
+    userId: undefined,
     authError: ''
   },
   mutations: {
@@ -54,7 +54,7 @@ export default {
         dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
       })
       .then( () => {
-        console.log("SUCCESS signedIn from store.auth.js")
+        console.log("SUCCESS signedIn from store.auth.js: " + uid)
         commit('SET_USER_ID', uid)
         dispatch('app/setLoading', false, { root: true })
       })
@@ -96,7 +96,7 @@ export default {
       // set user data null
       //commit('setUser', null)
       commit('SET_ERROR',null)
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       .then( () => { 
         dispatch('userProfileModule/closeDBChannel', {clearModule: true}, { root: true })
       })      
@@ -105,21 +105,21 @@ export default {
 
         console.log("SUCCESS signedOut from store.auth.js")
         commit('SET_USER_ID', undefined)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
 
         const currentRouter = router.app.$route
         if (currentRouter.meta && currentRouter.meta.authRequired) {
           router.push('/auth/signin')
         }
 
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
       })
       .catch( (error) => {
         console.log("ERROR signedOut from store.auth.js")
         console.log(error)
         commit('SET_ERROR',error)
         commit('SET_USER_ID', undefined)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
       })
     },
 
@@ -128,17 +128,17 @@ export default {
      * Action to sign user in
      */
     signIn: ({ commit, dispatch }, { email, password }) => {
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       Firebase.auth().signInWithEmailAndPassword(email, password)
       .then (() => {
         commit('SET_ERROR', null)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
       })
       .catch((error) =>{
         commit('SET_ERROR', error)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         //console.log("Error: auth/signIn:")
         //console.log(error)
       })
@@ -149,17 +149,17 @@ export default {
      * Action to sign user out
      */
     signOut: ({ commit, dispatch }) => {
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       Firebase.auth().signOut()
       .then (() => {
         commit('SET_ERROR', null)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
       })
       .catch((error) =>{
         commit('SET_ERROR', error)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         //console.log("Error: auth/signOut:")
         //console.log(error)
       })
@@ -170,7 +170,7 @@ export default {
      * Action to sign user up
      */
     signUp: ({commit, dispatch }, payload) => {
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       Firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
@@ -180,12 +180,12 @@ export default {
       //  }
       //)
       .then (() => {
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         commit('SET_ERROR', null)
       })
       .catch(function(error) {
         commit('SET_ERROR', error)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         //console.log("Error: auth/signUp:")
         //console.log(error)
       })
@@ -197,7 +197,7 @@ export default {
      * Action to update user eMail
     */   
     updateEmail: async ({ commit, dispatch }, { payload })  => {
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       //console.log("updating email to:" + payload)
@@ -207,7 +207,7 @@ export default {
       .then(function() {
         commit('changeUser', { email: payload}) // set ONLY user but NOT data!!!
         commit('SET_ERROR', null)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         console.log("updated email")
         return (null)
       })
@@ -216,7 +216,7 @@ export default {
         //alert(error)
         //throw new Error(error);
         commit('SET_ERROR', error)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         return (error)
       })
     },
@@ -226,19 +226,19 @@ export default {
      * Action to update user password
     */   
     updatePassword: ({ commit, dispatch }, { payload }) => {
-      dispatch('app/SetLoading', true, { root: true })
+      dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
       console.log("updating password to:" + payload)
       var user = Firebase.auth().currentUser
       user.updatePassword(payload).then(function() {
         commit('SET_ERROR', null)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         console.log("updated password")
         //return true
       }).catch(function(error) {
         //console.log(error)
         commit('SET_ERROR', error)
-        dispatch('app/SetLoading', false, { root: true })
+        dispatch('app/setLoading', false, { root: true })
         alert(error)
       })
     },

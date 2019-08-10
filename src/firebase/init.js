@@ -2,6 +2,7 @@
 import * as Firebase from 'firebase/app'
 import 'firebase/auth'
 import 'firebase/firestore'
+
 import store from "@/store"
 
 import config from './config'
@@ -35,7 +36,8 @@ function registerFirebaseAuthStateChanged() {
   Firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       // user is logged in so initialize him
-      store.dispatch('auth/signedin', {user: user})
+      console.log("firebase/init.js: user: " + user)
+      store.dispatch('auth/signedin', user)
         .catch(console.error)
     }
     else {

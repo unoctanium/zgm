@@ -7,7 +7,7 @@
       </div>
 
       <!-- Loader -->
-      <div v-show="user === undefined">Authenticating...</div>
+      <!--<div v-show="user === undefined">Authenticating...</div>-->
 
       <!-- Offline instruction -->
       <div v-show="!networkOnLine" data-test="offline-instruction">
@@ -17,13 +17,15 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form lazy-validation  @submit="onSignup" @keyup.enter.native="onSignup">
+      <v-form _lazy-validation  v-model="formValid" @submit="onSignup" @keyup.enter.native="onSignup">
         
         <v-text-field
           append-icon="person"
           name="email"
           label="Mail"
           id="email"
+          autocomplete="email"
+          :rules="[rules.required, rules.emailFormat]"
           v-model="email"
           type="email"
           required
@@ -32,6 +34,8 @@
           append-icon="lock"
           name="password"
           label="Password"
+          autocomplete="password"
+          :rules="[rules.required, rules.min]"
           id="password"
           v-model="password"
           type="password"
@@ -42,8 +46,10 @@
           label="Confirm Password"
           id="confirmPassword"
           v-model="confirmPassword"
+          :rules="[rules.required, rules.comparePasswords]"
           type="password"
-          :rules="[comparePasswords]">
+          autocomplete="password"
+          >
         </v-text-field>
         <div class="login-btn">
           <v-spacer></v-spacer>
@@ -51,7 +57,7 @@
             block 
             color="primary" 
             type="submit"
-            :disabled = "!networkOnLine"
+            :disabled = "!networkOnLine || !formValid"
           >
             Sign up
             <!--<span slot="loader" class="custom-loader">
@@ -80,22 +86,29 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
+      formValid: true,
+      rules: {
+        required: value => !!value || 'Required.',
+        min: v => v.length >= 6 || 'Min 6 characters',
+        emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
+        comparePasswords: (v) => v==this.password || "Passwords do not mactch"
+      },
     }
   },
   computed: {
-    ...mapState('auth', ['user', 'authError']),
+    ...mapState('auth', ['userId', 'authError']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
-    comparePasswords () {
-      return this.password !== this.confirmPassword ? 'Passwords do not match' : ''
-    }
+    // comparePasswords () {
+    //   return this.password !== this.confirmPassword ? 'Passwords do not match' : true
+    // }
   },
   mounted() {
     this.resetError()
   },
   watch: {
-    user: {
-      handler(user) {
-        if (user!=null) {
+    userId: {
+      handler(userId) {
+        if (userId!=undefined) {
           this.$router.push('/')
         }
       },
