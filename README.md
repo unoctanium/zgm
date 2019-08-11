@@ -7,7 +7,7 @@ npm install
 
 ## Configuration
 
-Create a file src/firebase/config.js and enter your cloud firestore setup.
+Add a file src/firebase/config.js and enter your cloud firestore setup.
 
 ```
 export default {
@@ -19,6 +19,16 @@ export default {
     messagingSenderId: 'YOUR_MESSAGE_SENDER_ID',
     appId: 'YOUR_APP_ID'
 };
+```
+
+Add a file file .firebasesrc in the project root and enter your cloud firestore project-id.
+
+```
+{
+  "projects":{
+    "default" : "YOUR_PROJECT_ID"
+  }
+}
 ```
 
 ### Initial Firebase deployment
