@@ -25,34 +25,34 @@
 			{
 				"source": "**/*.@(eot|otf|ttf|ttc|woff|font.css)",
 				"headers": [
-				  {
-            "key": "Access-Control-Allow-Origin",
-            "value": "*"
-				  }
+					{
+					"key": "Access-Control-Allow-Origin",
+					"value": "*"
+					}
 				]
 			},
-      {
-       "source": "**/*.@(jpg|jpeg|gif|png|svg)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=604800"
-          }
-       ]
-      },
-      {
-        "source": "404.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=300"
-          }
-        ]
-      }
+			{
+			"source": "**/*.@(jpg|jpeg|gif|png|svg)",
+				"headers": [
+					{
+						"key": "Cache-Control",
+						"value": "max-age=604800"
+					}
+				]
+			},
+			{
+				"source": "404.html",
+				"headers": [
+					{
+						"key": "Cache-Control",
+						"value": "max-age=300"
+					}
+				]
+			}
 		]
 	},
 	"firestore": {
-    "rules": "./src/firebase/firestore.rules",
-    "indexes": "./src/firebase/firestore.indexes.json"
+		"rules": "./src/firebase/firestore.rules",
+		"indexes": "./src/firebase/firestore.indexes.json"
 	}
 }
