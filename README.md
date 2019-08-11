@@ -5,6 +5,29 @@
 npm install
 ```
 
+## Configuration
+
+Create a file src/firebase/config.js and enter your cloud firestore setup.
+
+```
+export default {
+    apiKey: 'YOUR_API_KEY',
+    authDomain: 'YOUR_AUTH_DOMAIN',
+    databaseURL: 'YOUR_DATABASE_URL',
+    projectId: 'YOUR_PROJECT_ID',
+    storageBucket: 'YOUR_STORAGE_BUCKET',
+    messagingSenderId: 'YOUR_MESSAGE_SENDER_ID',
+    appId: 'YOUR_APP_ID'
+};
+```
+
+### Initial Firebase deployment
+```
+firebase init
+npm run build
+firebase deploy
+```
+
 ### Compiles and hot-reloads for development
 ```
 npm run serve
@@ -13,6 +36,7 @@ npm run serve
 ### Compiles and minifies for production
 ```
 npm run build
+firebase deploy
 ```
 
 ### Run your tests
