@@ -8,7 +8,16 @@
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" _scrollable>
 
       <v-card>
-        <v-toolbar>
+        <v-toolbar extension-height="2">
+          <v-progress-linear 
+            v-if="!networkOnLine"
+            slot="extension" 
+            indeterminate
+            class="ma-0"
+            color="red"
+            height="2"
+          ></v-progress-linear>
+
           <v-btn icon @click="cancelDialog()">
             <v-icon>close</v-icon>
           </v-btn>
@@ -159,8 +168,8 @@ export default {
   data () {
     return {
       formValid: true,
-      emailFormValid: false,
-      passwordFormValid: false,
+      //emailFormValid: false,
+      //passwordFormValid: false,
       photoURL: null,
       profileImage: null,
       email: '', 
@@ -168,11 +177,11 @@ export default {
       phone: '',
       userLevel: '',
       password: '',
-      emailDialog: false,
-      passwordDialog: false,
-      changedEmail: '',
-      changedPassword: '',
-      confirmPassword: '',
+      //emailDialog: false,
+      //passwordDialog: false,
+      //changedEmail: '',
+      //changedPassword: '',
+      //confirmPassword: '',
       rules: {
         inputRequired: (v) => !!v || "The input is required",
         emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
@@ -204,6 +213,10 @@ export default {
     ...mapState('userProfileModule', [
       'user'
     ]),
+    ...mapState('app', [
+      'networkOnLine'
+    ]),
+    
 
     comparePasswords() {
       return (this.changedPassword !== this.confirmPassword ? "Passwords don't match" : '' )
@@ -244,7 +257,7 @@ export default {
     ]),
     
     initDialog() {
-      console.log(this.user)
+      //console.log(this.user)
       this.email = this.user.email
       this.displayName = this.user.displayName
       this.photoURL = this.user.photoURL
@@ -256,7 +269,7 @@ export default {
     cancelDialog() {
       this.dialog = false
       //console.log("CANCEL")
-      this.initDialog()
+      //this.initDialog()
     },
 
     closeDialog() {

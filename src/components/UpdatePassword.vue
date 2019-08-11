@@ -148,7 +148,7 @@ export default {
 
     cancelDialog() {
       this.dialog = false
-      this.initDialog()
+      //this.initDialog()
     },
 
     closeDialog() {

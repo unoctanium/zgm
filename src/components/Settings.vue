@@ -6,17 +6,53 @@
         <v-btn color="primary" dark v-on="on">Open Dialog</v-btn>
       </template>-->
       <v-card>
-        <v-toolbar>
-          <v-btn icon @click="dialog = false">
+        <v-toolbar extension-height="2">
+
+          <v-progress-linear 
+            v-if="!networkOnLine"
+            slot="extension" 
+            indeterminate
+            class="ma-0"
+            color="red"
+            height="2"
+          ></v-progress-linear>
+
+          <v-btn icon @click="cancelDialog()">
             <v-icon>close</v-icon>
           </v-btn>
+
           <v-toolbar-title>Settings</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn text @click="dialog = false">Save</v-btn>
+            <v-btn text @click="closeDialog()">Save</v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-switch :label="`Dark Theme`" v-model="goDark"></v-switch>
+
+        <v-list subheader>
+          <v-subheader>App Settings</v-subheader>
+
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch v-model="darkMode" @change="onDarkModeUpdate()"></v-switch>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Dark Mode</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item>
+            <v-list-item-action>
+              <v-switch v-model="showMenu"></v-switch>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>Menu allways visible</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+        </v-list>
+
+
+<!--
         <v-list three-line subheader>
           <v-subheader>User Controls</v-subheader>
           <v-list-item>
@@ -63,13 +99,16 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
+-->
+
+
       </v-card>
     </v-dialog>
   <!--</v-layout>-->
 </template>
 
 <script>
-//import {mapState, mapMutations} from 'vuex'
+import {mapState} from 'vuex'
 
 export default {
   name: "Settings",
@@ -80,11 +119,13 @@ export default {
   },
   data () {
     return {
-      adialog: false,
-      goDark: true,
-      notifications: null,
-      sound: null,
-      widgets: null
+      
+      darkMode: false,
+      showMenu: false,
+
+      //notifications: null,
+      //sound: null,
+      //widgets: null
     }
   },
   computed: {
@@ -99,20 +140,55 @@ export default {
       set (value) {
         this.$emit('input', value)
       }
+    },
+    ...mapState('userProfileModule', [
+      'user'
+    ]),
+    ...mapState('app', [
+      'networkOnLine'
+    ]),
+  },
+  watch: {
+    user: {
+      handler(user) {
+        if (user.id!=undefined) {
+          this.initDialog()
+        }
+      },
+      immediate: true
+    },
+    value: function (newVal, oldVal) {
+      if (newVal && !oldVal)
+        this.initDialog()
     }
   },
   mounted: function() {
     
     //console.log("@/settings: mounted")
     // ODO!!! Put this in switch logic with store user data record in firestore
-    this.$vuetify.theme.dark = true
+    //this.$vuetify.theme.dark = true
   
   },
   methods: {
     
-//    onCloseEdit () {
-//      this.editing = false
-//    },
+    initDialog() {
+      this.darkMode = this.user.darkMode || false
+      this.showMenu = this.user.showMenu || false
+    },
+
+    closeDialog() {
+      this.dialog = false
+    },
+
+    cancelDialog() {
+      this.$vuetify.theme.dark = this.user.darkMode || false
+      this.dialog = false
+    },
+
+    onDarkModeUpdate() {
+      this.$vuetify.theme.dark = this.darkMode
+    }
+
   }
 }
 </script>

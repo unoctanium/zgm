@@ -1,5 +1,8 @@
 <template>
-  <div>Logged out</div>
+  <div>
+    <span>Logged out</span>
+    <v-btn color="primary" @click="goHome">Go Home</v-btn>
+  </div> 
 </template>
 
 <script>
@@ -10,6 +13,9 @@ export default {
   },
   async mounted () {
     await this.signOut ()
+  },
+  goHome() {
+      this.$router.push({ path: "/" })
   }
 }
 </script>
