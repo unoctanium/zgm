@@ -57,7 +57,7 @@ const userProfileModule = {
             })
             .catch(function(error) {
               // Uh-oh, an error occurred!
-              console.log("Error ongetting downloadURL")
+              console.log("Error on getting downloadURL")
               console.log(error)
             })
           }
@@ -94,7 +94,6 @@ const userProfileModule = {
      * Action to initialize user data if it is empty
      */   
     initIfNew: ({ dispatch, state } , uid ) => { // eslint-disable-line
-
       console.log("NEW")
       console.log(state.user)
       if(!state.user.email) {
@@ -104,13 +103,11 @@ const userProfileModule = {
           userLevel: 'user'
         }
         dispatch('patch', { ...data }) 
-  
       }
-
-
     }
-  
+
   },
+
 }
   
 export default userProfileModule
