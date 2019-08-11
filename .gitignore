@@ -7,6 +7,7 @@ node_modules
 .env.*.local
 
 # local firebase deploy
+.firebase/hosting.ZGlzdA.cache
 *.cache
 firebase-debug.log
 
@@ -26,4 +27,5 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
 
