@@ -7,7 +7,7 @@ node_modules
 .env.*.local
 
 # local firebase deploy
-/.firebase
+.firebase
 firebase-debug.log
 
 # firebase config
