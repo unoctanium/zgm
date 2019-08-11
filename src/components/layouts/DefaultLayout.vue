@@ -18,9 +18,9 @@
       </div>
       <!-- App Footer -->
       <v-footer height="auto" class="_white pa-3 app--footer">
-        <span class="caption">unoctanium Design &copy; {{ new Date().getFullYear() }}</span>
+        <span class="caption">zengastro &copy; uncoctanium {{ new Date().getFullYear() }}</span>
         <v-spacer></v-spacer>
-        <span class="caption mr-1">Version: {{ appVersion }}</span>
+        <span class="caption mr-1">V: {{ appVersion }}</span>
         <!--<v-spacer></v-spacer>
         <span class="caption mr-1"> Make With Love </span>
         <v-icon color="pink" small>favorite</v-icon>-->

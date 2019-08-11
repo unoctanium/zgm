@@ -149,6 +149,7 @@ export default {
     ]),
   },
   watch: {
+    
     user: {
       handler(user) {
         if (user.id!=undefined) {
@@ -157,18 +158,13 @@ export default {
       },
       immediate: true
     },
+    
     value: function (newVal, oldVal) {
       if (newVal && !oldVal)
         this.initDialog()
     }
   },
-  mounted: function() {
-    
-    //console.log("@/settings: mounted")
-    // ODO!!! Put this in switch logic with store user data record in firestore
-    //this.$vuetify.theme.dark = true
-  
-  },
+
   methods: {
     
     ...mapActions('userProfileModule', ['updateUserData']),
