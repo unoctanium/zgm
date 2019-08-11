@@ -1,8 +1,5 @@
 import { Firebase, initFirebase } from '@/firebase/init.js' // eslint-disable-line
-//import firebase from 'firebase/app'
-
 import router from '@/router'
-//import store from "@/store"
 
 export default {
   namespaced: true,  
@@ -21,13 +18,6 @@ export default {
   actions: {
 
     /**
-    * Setd ID of current user
-    */
-    // setUserId: ({ commit }, payload) => {
-    // commit('SET_USER_ID',payload)
-    // },
-
-    /**
     * Resets error message
     */
     resetError: ({ commit }) => {
@@ -39,56 +29,35 @@ export default {
      */
     signedin: ({ commit, dispatch }, user) => {
 
-      console.log(user)
-
+      //console.log(user)
       const uid = user.uid
-      //store.dispatch('userProfileModule/openDBChannel')
-      //.catch(console.error)
-      // or fetchAndAdd
-      // or store.dispatch('userData/setUserId')
-      // or store.dispatch('userData/setUserId', id)
-
+      
       commit('SET_ERROR',null)
       dispatch('app/setLoading', true, { root: true })
       .then( () => { 
         dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
+        // Explanation:
+        // store.dispatch('userProfileModule/openDBChannel')
+        // .catch(console.error)
+        // or fetchAndAdd
+        // or store.dispatch('userData/setUserId')
+        // or store.dispatch('userData/setUserId', id)
       })
       .then( () => { 
         dispatch('userProfileModule/initIfNew', { uid }, { root: true })
       })
       .then( () => {
-        console.log("SUCCESS signedIn from store.auth.js: " + uid)
+        //console.log("SUCCESS signedIn from store.auth.js: " + uid)
         commit('SET_USER_ID', uid)
         dispatch('app/setLoading', false, { root: true })
       })
       .catch( (error) => {
+        commit('SET_ERROR',error)
+        commit('SET_USER_ID', undefined)
+        dispatch('app/setLoading', false, { root: true })
         console.log("ERROR signedIn from store.auth.js")
         console.log(error)
-        commit('SET_USER_ID', undefined)
-        commit('SET_ERROR',error)
-        dispatch('app/setLoading', false, { root: true })
       })
-
-      /*
-      if (emptyDoc) {
-        // New User: fill profile data
-        const providerData = firebaseAuthUser.providerData[0]
-        const { displayName, photoURL, email } = providerData
-        const newUserData = {
-          email,
-          displayName: displayName || '',
-          photoURL: photoURL || '',
-          phone: '',
-          userLevel: 'guest'
-        }
-        store.dispatch('userProfieModule/patch', newUserData)
-      }
-      */
-
-      // TODO: @Odo: get all other personal data
-      // dispatch('products/getUserProducts', null, { root: true })
-
-      //commit('app/setLoading', false, { root: true })
     },
 
     /**
@@ -118,11 +87,11 @@ export default {
         dispatch('app/setLoading', false, { root: true })
       })
       .catch( (error) => {
-        console.log("ERROR signedOut from store.auth.js")
-        console.log(error)
         commit('SET_ERROR',error)
         commit('SET_USER_ID', undefined)
         dispatch('app/setLoading', false, { root: true })
+        console.log("ERROR signedOut from store.auth.js")
+        console.log(error)
       })
     },
 
@@ -142,8 +111,8 @@ export default {
       .catch((error) =>{
         commit('SET_ERROR', error)
         dispatch('app/setLoading', false, { root: true })
-        //console.log("Error: auth/signIn:")
-        //console.log(error)
+        console.log("Error: auth/signIn:")
+        console.log(error)
       })
     },
     
@@ -163,8 +132,8 @@ export default {
       .catch((error) =>{
         commit('SET_ERROR', error)
         dispatch('app/setLoading', false, { root: true })
-        //console.log("Error: auth/signOut:")
-        //console.log(error)
+        console.log("Error: auth/signOut:")
+        console.log(error)
       })
     },
 
@@ -177,14 +146,6 @@ export default {
       commit('SET_ERROR', null)
 
       Firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
-      //.then( (user) => {
-      //    const userData = dispatch('createUserFromFirebaseAuth', user )
-      //    commit('setUser', userData)
-      //  }
-      //)
-      // .then(() => {
-
-      // }
       .then (() => {
         dispatch('app/setLoading', false, { root: true })
         commit('SET_ERROR', null)
@@ -192,8 +153,8 @@ export default {
       .catch(function(error) {
         commit('SET_ERROR', error)
         dispatch('app/setLoading', false, { root: true })
-        //console.log("Error: auth/signUp:")
-        //console.log(error)
+        console.log("Error: auth/signUp:")
+        console.log(error)
       })
     },
 
@@ -211,9 +172,11 @@ export default {
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
       .then(function() {
         Firebase.auth().currentUser.updateEmail(payload.newEmail)
+        return
       })
       .then(function() { 
         dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
+        return
       })
       .then(function() {
         return
@@ -223,7 +186,7 @@ export default {
         //dispatch('app/setLoading', false, { root: true })
       //})
       .catch(function(error) {
-        //console.log(error)
+        console.log(error)
         alert(error)
         //commit('SET_ERROR', error)
         //dispatch('app/setLoading', false, { root: true })
@@ -242,6 +205,7 @@ export default {
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
       .then(function() {
         Firebase.auth().currentUser.updatePassword(payload.newPassword)
+        return
       })
       .then(function() {
         return

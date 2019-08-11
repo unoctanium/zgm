@@ -27,7 +27,7 @@ const userProfileModule = {
       console.log(image)
 
       const id = rootGetters['auth/getUserId']
-      console.log(id)
+      //console.log(id)
 
 
       // case: we have aphoto to upload. So we upload it and then we call uploadData()
@@ -55,6 +55,11 @@ const userProfileModule = {
               console.log('userProfileModule.js: File available at ' + downloadURL)
               dispatch('patch', { ...data, photoURL: downloadURL }) 
             })
+            .catch(function(error) {
+              // Uh-oh, an error occurred!
+              console.log("Error ongetting downloadURL")
+              console.log(error)
+            })
           }
         )
 
@@ -68,10 +73,12 @@ const userProfileModule = {
         const fileExt = fileExt1.slice(0, fileExt1.indexOf('?'))
         const fileRef = storageRef.child('users/' + id + '.' + fileExt)
         // Delete the file
-        fileRef.delete().then(function() {
+        fileRef.delete()
+        .then(function() {
           // File deleted successfully. Now we upload data
           dispatch('patch', { ...data, photoURL: null }) 
-        }).catch(function(error) {
+        })
+        .catch(function(error) {
           // Uh-oh, an error occurred!
           console.log("Error on deleting file: " + 'users/' + id + '.' + fileExt)
           console.log(error)
