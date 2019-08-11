@@ -137,11 +137,15 @@
       </v-list>
     </v-menu>
     -->
+
+
     <settings v-model="settingsdialog"></settings>
     <profile v-model="profiledialog" ></profile>
     <update-email v-model="emaildialog" ></update-email>
     <update-password v-model="passworddialog" ></update-password>
-    
+
+
+
     <!--<profile v-model="profiledialog" :profileUser="profileUser"></profile>-->
 
   </v-app-bar>
@@ -152,6 +156,7 @@
 // import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
 import { mapState } from 'vuex'
+
 
 import Settings from "@/components/Settings"
 import Profile from "@/components/Profile"
@@ -164,10 +169,12 @@ export default {
   components: {
     // NotificationList
     // InstallPrompt
+
     Settings,
     Profile,
     UpdateEmail,
     UpdatePassword
+
   },
   props: {
     title: {

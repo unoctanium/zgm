@@ -1,11 +1,17 @@
 <template>
   <v-app id="inspire" class="app dashboard" _style="background: #3F51B5">
+
     <app-drawer class="app--drawer" :showDrawer.sync="showDrawer"></app-drawer>
     <app-toolbar class="app--toolbar" :title="$route.meta.title" @side-icon-click="handleDrawerVisiable"></app-toolbar>
     <v-content>
       
       <!-- Page Header -->
       <!--<page-header></page-header>-->
+
+      <!-- Progress Overlay -->
+      <v-overlay :value="progressOverlay">
+        <v-progress-circular indeterminate size="64"></v-progress-circular>
+      </v-overlay>
 
       <div class="page-wrapper" pa-5>
         <router-view></router-view>
@@ -42,16 +48,37 @@ export default {
   },
   data() {
     return {
-      showDrawer: false
+      showDrawer: false,
+      progressOverlay: true
     }
   },
   computed: {
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle', 'appVersion']), 
+    ...mapState('userProfileModule', ['user']),
   },
+  
+  watch: {
+    user: {
+      handler(user) {
+        if (user && user.id!=undefined) {
+          this.initLayout();
+        }
+      },
+      immediate: true
+    },
+  },
+  
   methods: {
+
+    initLayout() {
+      this.progressOverlay = false
+      this.$vuetify.theme.dark = this.$store.state.userProfileModule.user.settings.darkMode
+    },
+
     handleDrawerVisiable() {
       this.showDrawer = !this.showDrawer
-     }
+    }
+
   },
   created() {}
 }

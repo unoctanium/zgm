@@ -12,7 +12,7 @@ export default new Vuetify({
     iconfont: 'md',
   },
   theme: {
-    //dark: true,
+    dark: false,
     //themes: {
       /*
       light: {

@@ -1,5 +1,4 @@
 import { Firebase  } from '@/firebase/init.js'
-import 'firebase/storage'
 
 const userProfileModule = {
   firestorePath: 'users/{userId}',
@@ -17,7 +16,7 @@ const userProfileModule = {
 
 
     /**
-     * Action to update user data
+     * Action to update user profile data and image in store
      */   
     updateUserProfile: ({ dispatch, rootGetters }, { data, image }) => {
 
@@ -91,19 +90,36 @@ const userProfileModule = {
     },
 
     /**
+     * Action to update user data
+     */   
+    updateUserData: ({ dispatch }, { data }) => {
+      dispatch('patch', { ...data }) 
+    },
+
+    /**
      * Action to initialize user data if it is empty
      */   
     initIfNew: ({ dispatch, state } , uid ) => { // eslint-disable-line
-      console.log("NEW")
-      console.log(state.user)
-      if(!state.user.email) {
-        console.log("NEWNEW")
+
+      return new Promise( (resolve, reject) => { // eslint-disable-line
+        console.log("NEW")
+        console.log(state.user)
+        
         const data = {
           email: Firebase.auth().currentUser.email,
-          userLevel: 'user'
+          userLevel: 'user',
+          settings:{
+            darkMode: false,
+            showMenu: false
+          }
         }
-        dispatch('patch', { ...data }) 
-      }
+        dispatch('patch', { ...data })
+        .then(() => {resolve})
+        .catch((error) => {reject(error)})
+        
+        resolve
+      })
+    
     }
 
   },

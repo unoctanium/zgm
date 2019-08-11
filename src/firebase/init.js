@@ -31,12 +31,13 @@ function initFirebase () {
 }
 
 
-
+/*
 function registerFirebaseAuthStateChanged() {
   Firebase.auth().onAuthStateChanged((user) => {
     if (user) {
       // user is logged in so initialize him
       console.log("firebase/init.js: user: " + user)
+      
       store.dispatch('auth/signedin', user)
         .catch(console.error)
     }
@@ -51,7 +52,40 @@ function registerFirebaseAuthStateChanged() {
   //   const actionToDispatch = (!isNull(user)) ? 'signedin' : 'signedout'
   //   this.$store.dispatch(`auth/${actionToDispatch}`, user)
   // })
+}
+*/
 
+function registerFirebaseAuthStateChanged() {
+  
+  console.log("running checkAuthStatus()")
+
+  return new Promise((resolve, reject) => {
+    try {
+      Firebase.auth()
+      .onAuthStateChanged(user => {
+          console.log('userChecked:', user)
+
+          if (user) {
+            // user is logged in so initialize him
+            console.log("firebase/init.js: user: " + user)
+            
+            store.dispatch('auth/signedin', user)
+              .catch(console.error)
+          }
+
+          resolve(user);
+      });
+    } catch {
+      reject('api failed')
+    }
+  })
+
+  
 }
 
+
+
 export { Firebase, initFirebase, registerFirebaseAuthStateChanged }
+
+
+

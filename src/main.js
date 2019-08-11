@@ -12,9 +12,11 @@ import { initFirebase, registerFirebaseAuthStateChanged } from '@/firebase/init.
 
 Vue.config.productionTip = false
 
+
+/*
 new Vue({
   router,
-  store,
+  store: store,
   vuetify,
   created()  {
     // initFirebase
@@ -32,3 +34,29 @@ new Vue({
   },
   render: h => h(App)
 }).$mount('#app')
+*/
+
+
+initFirebase()
+.then(() => {    
+  registerFirebaseAuthStateChanged()
+})
+.then(() => {
+
+  new Vue({
+    router,
+    store: store,
+    vuetify,
+    render: h => h(App)
+  }).$mount('#app')
+
+})
+.catch(error => {
+  // take user to a page stating an error occurred
+  // (might be a connection error, or the app is open in another tab)
+  console.log("ERROR from main.js:")
+  console.log(error)
+  router.push('/error')
+})
+
+

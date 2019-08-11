@@ -1,7 +1,7 @@
 <template>
   <div>
     <span>Logged out</span>
-    <v-btn color="primary" @click="goHome">Go Home</v-btn>
+    <v-btn color="primary" @click="goHome()">Go Home</v-btn>
   </div> 
 </template>
 
@@ -13,6 +13,7 @@ export default {
   },
   async mounted () {
     await this.signOut ()
+    this.$vuetify.theme.dark = false
   },
   goHome() {
       this.$router.push({ path: "/" })

@@ -108,7 +108,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: "Settings",
@@ -171,17 +171,26 @@ export default {
   },
   methods: {
     
+    ...mapActions('userProfileModule', ['updateUserData']),
+
     initDialog() {
-      this.darkMode = this.user.darkMode || false
-      this.showMenu = this.user.showMenu || false
+      this.darkMode = this.user.settings.darkMode || false
+      this.showMenu = this.user.settings.showMenu || false
     },
 
     closeDialog() {
       this.dialog = false
+      const patchData = {
+        settings: {
+          darkMode: this.darkMode,
+          showMenu: this.showMenu
+        } 
+      }
+      this.updateUserData( { data: patchData } )
     },
 
     cancelDialog() {
-      this.$vuetify.theme.dark = this.user.darkMode || false
+      this.$vuetify.theme.dark = this.user.settings.darkMode || false
       this.dialog = false
     },
 

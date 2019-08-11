@@ -36,6 +36,9 @@ export default {
       dispatch('app/setLoading', true, { root: true })
       .then( () => { 
         dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
+      })
+      .then( () => { 
+        dispatch('userProfileModule/initIfNew', { uid }, { root: true })
         // Explanation:
         // store.dispatch('userProfileModule/openDBChannel')
         // .catch(console.error)
@@ -43,13 +46,11 @@ export default {
         // or store.dispatch('userData/setUserId')
         // or store.dispatch('userData/setUserId', id)
       })
-      .then( () => { 
-        dispatch('userProfileModule/initIfNew', { uid }, { root: true })
-      })
       .then( () => {
         //console.log("SUCCESS signedIn from store.auth.js: " + uid)
         commit('SET_USER_ID', uid)
         dispatch('app/setLoading', false, { root: true })
+        
       })
       .catch( (error) => {
         commit('SET_ERROR',error)
@@ -63,6 +64,7 @@ export default {
     /**
      * Callback fired when user signed out
      */
+    /*
     signedout: ({ commit, dispatch }) => {
       
       // set user data null
@@ -84,7 +86,6 @@ export default {
           router.push('/auth/signin')
         }
 
-        dispatch('app/setLoading', false, { root: true })
       })
       .catch( (error) => {
         commit('SET_ERROR',error)
@@ -94,6 +95,7 @@ export default {
         console.log(error)
       })
     },
+    */
 
 
     /**
@@ -124,10 +126,25 @@ export default {
       dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
-      Firebase.auth().signOut()
+      //Firebase.auth().signOut()
+      ///ODO
+      dispatch('userProfileModule/closeDBChannel', {clearModule: true}, { root: true })
+      .then( () => { 
+        Firebase.auth().signOut()
+      })    
+      /// EEE  
       .then (() => {
         commit('SET_ERROR', null)
         dispatch('app/setLoading', false, { root: true })
+        
+        /// ODO
+        console.log("SUCCESS signedOut from store.auth.js")
+        commit('SET_USER_ID', undefined)
+        const currentRouter = router.app.$route
+        if (currentRouter.meta && currentRouter.meta.authRequired) {
+          router.push('/auth/signin')
+        }
+        /// EEE
       })
       .catch((error) =>{
         commit('SET_ERROR', error)

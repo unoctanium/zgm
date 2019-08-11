@@ -86,7 +86,7 @@
 import {mapActions, mapState} from 'vuex'
 
 export default {
-  name: "UpdateEmail",
+  name: "UpdatePassword",
   props: {
     value: Boolean
   },
