@@ -8,7 +8,6 @@ import '@babel/polyfill'
 import './registerServiceWorker'
 import '@/util/handle-network-status'
 
-
 import VuetifyDialog from 'vuetify-dialog'
 import 'vuetify-dialog/dist/vuetify-dialog.css'
 Vue.use(VuetifyDialog, {
@@ -16,7 +15,6 @@ Vue.use(VuetifyDialog, {
     vuetify
   }
 })
-
 
 import { initFirebase, registerFirebaseAuthStateChanged } from '@/firebase/init.js'
 
@@ -40,7 +38,7 @@ initFirebase()
 .catch(error => {
   // take user to a page stating an error occurred
   // (might be a connection error, or the app is open in another tab)
-  console.log("ERROR from main.js:")
+  console.log("ERROR from main.js")
   console.log(error)
   alert(error)
   router.push('/error')
