@@ -7,9 +7,6 @@
         <h1 class="flex my-4 primary--text">{{ appShortTitle }}</h1>
       </div>
       
-      <!-- Loader -->
-      <!--<div v-show="userId === undefined">Authenticating...</div>-->
-
       <!-- Offline instruction -->
       <div v-show="!networkOnLine" data-test="offline-instruction">
         Please check your connection, login feature is not available offline.
@@ -52,9 +49,6 @@
             :disabled = "!networkOnLine || !formValid"
           >
             Login
-            <!--<span slot="loader" class="custom-loader">
-              <v-icon light>cached</v-icon>
-            </span>-->
           </v-btn>
           <v-btn
             text 
@@ -84,11 +78,6 @@ export default {
         min: v => v.length >= 6 || 'Min 6 characters',
         emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
       },
-      // userId: null,
-      // authError: null,
-      // networkOnLine: null,
-      // appTitle: null,
-      // appShortTitle: null
     }
   },
   computed: {
@@ -100,12 +89,7 @@ export default {
     }
   },
   mounted() {
-    //this.$refs.signinForm.reset()
-    //this.$refs.signinForm.validate()
-    //this.$refs.signinForm.resetValidation()
-
     this.resetError()
-    //console.log(this.userId)
     if (this.userId!=null && this.userId!=undefined) {
       const redirectUrl = (this.$route.query.redirectUrl == null)
         ? '/dashboard'

@@ -32,9 +32,6 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-       
-        <!-- Error-Message -->
-        <!--<p v-if="errorMessage">{{ errorMessage }}</p>-->
 
         <!-- Progress Overlay -->
         <v-overlay :value="progressOverlay">
@@ -148,12 +145,11 @@ export default {
 
     cancelDialog() {
       this.dialog = false
-      //this.initDialog()
     },
 
     closeDialog() {
       this.progressOverlay = true
-      this.updatePassword( { currentEmail: this.currentEmail, currentPassword: this.oldPassword, newPassword: this.newPassword} )
+      this.updatePassword( { currentEmail: this.currentEmail, currentPassword: this.oldPassword, newPassword: this.newPassword })
       this.progressOverlay = false
       this.dialog = false
     },

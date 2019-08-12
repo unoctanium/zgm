@@ -13,6 +13,7 @@ export default new Vuetify({
   },
   theme: {
     dark: false,
+    //isdark: false,
     //themes: {
       /*
       light: {

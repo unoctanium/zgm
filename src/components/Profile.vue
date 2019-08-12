@@ -168,8 +168,6 @@ export default {
   data () {
     return {
       formValid: true,
-      //emailFormValid: false,
-      //passwordFormValid: false,
       photoURL: null,
       profileImage: null,
       email: '', 
@@ -177,31 +175,16 @@ export default {
       phone: '',
       userLevel: '',
       password: '',
-      //emailDialog: false,
-      //passwordDialog: false,
-      //changedEmail: '',
-      //changedPassword: '',
-      //confirmPassword: '',
       rules: {
         inputRequired: (v) => !!v || "The input is required",
         emailFormat: (v) => /.+@.+/.test(v) || "Input must be valid E-Mail",
         max20: (v) => v && v.length <= 20 || 'The Input must be less than 20 characters',
         min6: (v) => v && v.length >= 6 || 'The Input must be at least 6 characters'
       },
-      /*
-      displayNameRules: [
-        (v) => !!v || "The input is required",
-        //(v) => v && v.length <= 20 || 'The Input must be less than 20 characters'
-      ],
-      phoneRules: [ (v) => v && v.length <= 20 || 'The Input must be less than 20 characters' ],
-      newEmailRules: [
-        (v) => !!v || "The Input is required",
-        (v) => /.+@.+/.test(v) || "Input must be valid E-Mail"
-      ],
-      */
     }
   },
   computed: {
+
     dialog: {
       get () {
         return this.value
@@ -210,28 +193,14 @@ export default {
         this.$emit('input', value)
       }
     },
-    ...mapState('auth', {
-      authuser: state => state.user,
-    }),
+    ...mapState('auth', { authuser: state => state.user }),
     ...mapState('userProfileModule', ['user']),
     ...mapState('app', ['networkOnLine']),
-
-    
 
     comparePasswords() {
       return (this.changedPassword !== this.confirmPassword ? "Passwords don't match" : '' )
     }
-    /*
-    newPasswordRules() {
-      return (
-      [
-        (v) => !!v || 'This input is required',
-        (v) => v && v.length >= 8 || 'The Input must be at least characters',
-        (v) => (v == this.confirmPassword) || "Passwords don't match",
-      ] )
-    },*/
-   
-
+  
   },
   watch: {
     user: {
@@ -247,17 +216,14 @@ export default {
         this.initDialog()
     }
   },
-  mounted() {
+  //mounted() {
     //this.initDialog()
-  },
+  //},
   methods: {
 
-    ...mapActions('userProfileModule', [
-      'updateUserProfile'
-    ]),
+    ...mapActions('userProfileModule', ['updateUserProfile']),
     
     initDialog() {
-      //console.log(this.user)
       this.email = this.user.email || this.authuser.email
       this.displayName = this.user.displayName
       this.photoURL = this.user.photoURL
@@ -268,8 +234,6 @@ export default {
 
     cancelDialog() {
       this.dialog = false
-      //console.log("CANCEL")
-      //this.initDialog()
     },
 
     closeDialog() {
@@ -281,8 +245,6 @@ export default {
         phone: this.phone,
         //userLevel: this.user.userLevel
       }
-        //dispatch('moduleName/patch', {status: 'awesome'})
-      //this.patch(clonedData)
       const imageData = {
         oldPhotoURL: this.user.photoURL,
         newPhotoURL: this.photoURL,
@@ -314,9 +276,6 @@ export default {
       fileReader.readAsDataURL(files[0])
       this.profileImage = files[0]
     },
-
-
-      
   }
 }
 </script>

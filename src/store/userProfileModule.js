@@ -1,6 +1,7 @@
 import { Firebase  } from '@/firebase/init.js'
 import "firebase/storage"
-//import store from "@/store"   
+import Vue from 'vue'
+
 
 const userProfileModule = {
   firestorePath: 'users/{userId}',
@@ -15,22 +16,14 @@ const userProfileModule = {
   getters: {},
   mutations: {},
   actions: {
-
-
+    
     /**
      * Action to update user profile data and image in store
      */   
     updateUserProfile: ({ dispatch, rootGetters }, { data, image }) => {
 
-      //commit('app/setLoading' true, { root: true })
-      console.log("data from updateUserProfile")
-      console.log(data)
-      console.log(image)
-
       const id = rootGetters['auth/getUser'].uid
-      //console.log(id)
-
-
+      
       // case: we have aphoto to upload. So we upload it and then we call uploadData()
       if (image.newImage) {
 
@@ -39,7 +32,6 @@ const userProfileModule = {
         const fileRef = storageRef.child('users/' + id + '.' + fileExt)
 
         var uploadTask = fileRef.put(image.newImage)
-
         uploadTask.on(Firebase.storage.TaskEvent.STATE_CHANGED,
           
           function(snapshot) { // eslint-disable-line
@@ -47,8 +39,13 @@ const userProfileModule = {
             //console.log('Upload is ' + progress + '% done') 
           },
           function (error) { // eslint-disable-line
-            console.log('Upload error: ')
-            console.log(error)
+            // An error happened during image upload
+            //console.log(error);
+            Vue.prototype.$dialog.error({
+              text: 'Error furing image upload: ' + error,
+              title: 'Error',
+              persistent: true
+            })
           },
           function () {
             uploadTask.snapshot.ref.getDownloadURL()
@@ -56,10 +53,14 @@ const userProfileModule = {
               console.log('userProfileModule.js: File available at ' + downloadURL)
               dispatch('patch', { ...data, photoURL: downloadURL }) 
             })
-            .catch(function(error) {
-              // Uh-oh, an error occurred!
-              console.log("Error on getting downloadURL")
-              console.log(error)
+            .catch(function(error) { // eslint-disable-line
+              // An error happened when getting downloadURL
+              //console.log(error);
+              Vue.prototype.$dialog.error({
+                text: 'Error getting downloadURL',
+                title: 'Error',
+                persistent: true
+              })
             })
           }
         )
@@ -79,10 +80,14 @@ const userProfileModule = {
           // File deleted successfully. Now we upload data
           dispatch('patch', { ...data, photoURL: null }) 
         })
-        .catch(function(error) {
-          // Uh-oh, an error occurred!
-          console.log("Error on deleting file: " + 'users/' + id + '.' + fileExt)
-          console.log(error)
+        .catch(function(error) { // eslint-disable-line
+          // An error happened during deleting old image
+          //console.log(error);
+          Vue.prototype.$dialog.error({
+            text: "Error on deleting file: " + 'users/' + id + '.' + fileExt,
+            title: 'Error',
+            persistent: true
+          })
         })
       }
       // case: we didnt touch photo
@@ -109,15 +114,11 @@ const userProfileModule = {
 
       return new Promise( (resolve, reject) => { // eslint-disable-line
 
-        console.log("NEW")
-        console.log(user.email)
-        console.log(rootState.userProfileModule.user.email)
-
         if(rootState.userProfileModule.user.email) {
           resolve()
           return
         }
-        
+
         const data = {
           email: user.email,
           userLevel: 'user',
@@ -126,26 +127,24 @@ const userProfileModule = {
             showMenu: false
           }
         }
-        
-        console.log("patching NEW")
-
         dispatch('patch', { ...data })
         .then(() => {
-          console.log("patched user profile")
+          //console.log("patched user profile")
           resolve()
         })
         .catch((error) => {
-          console.log("error")
+          // an Error happened during patching bew user data
+          //console.log(error);
+          Vue.prototype.$dialog.error({
+            text: 'Error when patching new user data',
+            title: 'Error',
+            persistent: true
+          })
           reject(error)
         })
-
       })
-    
     }
-    
-
   },
-
 }
   
 export default userProfileModule

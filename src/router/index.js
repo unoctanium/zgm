@@ -4,7 +4,6 @@ import { routes } from "./config"
 import NProgress from "nprogress"
 import store from '@/store'
 import "nprogress/nprogress.css"
-//import { isNull } from "@/util"
 
 Vue.use(Router)
 const router = new Router({

@@ -60,9 +60,6 @@
             :disabled = "!networkOnLine || !formValid"
           >
             Sign up
-            <!--<span slot="loader" class="custom-loader">
-              <v-icon light>cached</v-icon>
-            </span>-->
           </v-btn>
           <v-btn
             text 
@@ -99,9 +96,6 @@ export default {
   computed: {
     ...mapState('auth', ['user', 'authError']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
-    // comparePasswords () {
-    //   return this.password !== this.confirmPassword ? 'Passwords do not match' : true
-    // }
   },
   mounted() {
     this.resetError()
@@ -123,7 +117,6 @@ export default {
       event.preventDefault()
       this.signUp ( { email:this.email, password:this.password, route: '/' })
     }
-
   }
 }
 

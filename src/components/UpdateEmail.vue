@@ -32,14 +32,10 @@
           </v-toolbar-items>
         </v-toolbar>
 
-        <!-- Error-Message -->
-        <!--<p v-if="errorMessage">{{ errorMessage }}</p>-->
-
         <!-- Progress Overlay -->
         <v-overlay :value="progressOverlay">
           <v-progress-circular indeterminate size="64"></v-progress-circular>
         </v-overlay>
-
 
         <v-card-text>
 
@@ -71,7 +67,6 @@
             @click:append="passwordVisible = !passwordVisible"
           ></v-text-field>
         </v-card-text>
-
 
       </v-card>
     </v-dialog>
@@ -144,7 +139,6 @@ export default {
 
     cancelDialog() {
       this.dialog = false
-      //this.initDialog()
     },
 
     closeDialog() {
@@ -152,6 +146,7 @@ export default {
       this.updateEmail( { currentEmail: this.currentEmail, newEmail: this.newEmail, currentPassword: this.password })
       this.progressOverlay = false
       this.dialog = false
+      
     },    
   }
 }
