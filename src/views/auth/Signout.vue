@@ -12,11 +12,16 @@ export default {
     ...mapActions('auth', ['signOut']),
   },
   async mounted () {
-    await this.signOut ()
+    this.signOut ()
     this.$vuetify.theme.dark = false
+    
+    
   },
   goHome() {
-      this.$router.push({ path: "/" })
+    this.signOut ()
+    this.$vuetify.theme.dark = false
+    window.location.reload();
+    this.$router.push({ path: "/" })
   }
 }
 </script>

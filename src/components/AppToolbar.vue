@@ -155,7 +155,7 @@
 // import NotificationList from "@/components/widgets/list/NotificationList"
 // import InstallPrompt from '@/components/InstallPrompt'
 import Util from "@/util"
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 
 import Settings from "@/components/Settings"
@@ -236,9 +236,12 @@ export default {
           return false
     },
     ...mapState('app', ['loading', 'networkOnLine']),
-    //...mapState('auth', ['user']),
+
   },
   methods: {
+
+    ...mapActions('auth', ['signOut']),
+
     handleDrawerToggle() {
       this.$emit("side-icon-click")
     },
@@ -252,7 +255,9 @@ export default {
     },
     handleLogut() {
       //handle logout
-      this.$router.replace('/auth/signout')
+      this.$vuetify.theme.dark = false
+      this.signOut ()
+      
     },
     handleSetting() {
       //this.$router.push('/settings')

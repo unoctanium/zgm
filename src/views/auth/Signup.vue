@@ -97,7 +97,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('auth', ['userId', 'authError']),
+    ...mapState('auth', ['user', 'authError']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
     // comparePasswords () {
     //   return this.password !== this.confirmPassword ? 'Passwords do not match' : true
@@ -107,9 +107,9 @@ export default {
     this.resetError()
   },
   watch: {
-    userId: {
-      handler(userId) {
-        if (userId!=undefined) {
+    user: {
+      handler(user) {
+        if (user!=undefined) {
           this.$router.push('/')
         }
       },

@@ -210,12 +210,12 @@ export default {
         this.$emit('input', value)
       }
     },
-    ...mapState('userProfileModule', [
-      'user'
-    ]),
-    ...mapState('app', [
-      'networkOnLine'
-    ]),
+    ...mapState('auth', {
+      authuser: state => state.user,
+    }),
+    ...mapState('userProfileModule', ['user']),
+    ...mapState('app', ['networkOnLine']),
+
     
 
     comparePasswords() {
@@ -236,7 +236,7 @@ export default {
   watch: {
     user: {
       handler(user) {
-        if (user.id!=undefined) {
+        if (user.id!=undefined && this.authuser!=undefined) {
           this.initDialog()
         }
       },
@@ -258,7 +258,7 @@ export default {
     
     initDialog() {
       //console.log(this.user)
-      this.email = this.user.email
+      this.email = this.user.email || this.authuser.email
       this.displayName = this.user.displayName
       this.photoURL = this.user.photoURL
       this.phone = this.user.phone,
@@ -275,7 +275,7 @@ export default {
     closeDialog() {
       this.dialog = false
       const clonedData = {
-        id : this.user.id,
+        //id : this.user.id,
         email: this.email,
         displayName: this.displayName,
         phone: this.phone,

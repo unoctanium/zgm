@@ -1,4 +1,6 @@
 import { Firebase  } from '@/firebase/init.js'
+import "firebase/storage"
+//import store from "@/store"   
 
 const userProfileModule = {
   firestorePath: 'users/{userId}',
@@ -25,7 +27,7 @@ const userProfileModule = {
       console.log(data)
       console.log(image)
 
-      const id = rootGetters['auth/getUserId']
+      const id = rootGetters['auth/getUser'].uid
       //console.log(id)
 
 
@@ -85,6 +87,7 @@ const userProfileModule = {
       }
       // case: we didnt touch photo
       else {
+        console.log("patching user profile")
         dispatch('patch', { ...data }) 
       }
     },
@@ -93,34 +96,53 @@ const userProfileModule = {
      * Action to update user data
      */   
     updateUserData: ({ dispatch }, { data }) => {
+      console.log("patching user data")
       dispatch('patch', { ...data }) 
     },
+
 
     /**
      * Action to initialize user data if it is empty
      */   
-    initIfNew: ({ dispatch, state } , uid ) => { // eslint-disable-line
+    
+    initIfNew: ({ dispatch, rootState } ,user ) => { // eslint-disable-line
 
       return new Promise( (resolve, reject) => { // eslint-disable-line
+
         console.log("NEW")
-        console.log(state.user)
+        console.log(user.email)
+        console.log(rootState.userProfileModule.user.email)
+
+        if(rootState.userProfileModule.user.email) {
+          resolve()
+          return
+        }
         
         const data = {
-          email: Firebase.auth().currentUser.email,
+          email: user.email,
           userLevel: 'user',
           settings:{
             darkMode: false,
             showMenu: false
           }
         }
-        dispatch('patch', { ...data })
-        .then(() => {resolve})
-        .catch((error) => {reject(error)})
         
-        resolve
+        console.log("patching NEW")
+
+        dispatch('patch', { ...data })
+        .then(() => {
+          console.log("patched user profile")
+          resolve()
+        })
+        .catch((error) => {
+          console.log("error")
+          reject(error)
+        })
+
       })
     
     }
+    
 
   },
 

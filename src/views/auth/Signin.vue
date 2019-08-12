@@ -92,7 +92,7 @@ export default {
     }
   },
   computed: {
-    ...mapState('auth', ['userId', 'authError']),
+    ...mapState('auth', ['user', 'authError']),
     ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
  
     nextRoute () {
@@ -114,9 +114,9 @@ export default {
     }
   },
   watch: {
-    userId: {
-      handler(userId) {
-        if (userId!=undefined) {
+    user: {
+      handler(user) {
+        if (user!=undefined) {
           const redirectUrl = (this.$route.query.redirectUrl == null)
             ? '/dashboard'
             : this.$route.query.redirectUrl

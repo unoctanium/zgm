@@ -4,15 +4,15 @@ import router from '@/router'
 export default {
   namespaced: true,  
   state: {
-    userId: undefined,
+    user: undefined,
     authError: ''
   },
   mutations: {
-    SET_USER_ID: (state, value) => (state.userId = value),
+    SET_USER: (state, value) => (state.user = value),
     SET_ERROR: (state, value) => (state.authError = value),
   },
   getters: {
-    getUserId: state => (state.userId),
+    getUser: state => (state.user),
     getAuthError: state => (state.authError)
   },
   actions: {
@@ -27,35 +27,41 @@ export default {
     /**
      * Callback fired when user signed in
      */
-    signedin: ({ commit, dispatch }, user) => {
+    signedin: async ({ commit, dispatch }, user) => {
 
       //console.log(user)
       const uid = user.uid
-      
+      console.log("signedin")
+      console.log(user)
+      commit('SET_USER', user)
       commit('SET_ERROR',null)
-      dispatch('app/setLoading', true, { root: true })
-      .then( () => { 
-        dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
-      })
-      .then( () => { 
-        dispatch('userProfileModule/initIfNew', { uid }, { root: true })
+      //dispatch('app/setLoading', true, { root: true })
+      
+      //.then( () => { 
+        console.log("openDBChannel")
+        await dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
         // Explanation:
         // store.dispatch('userProfileModule/openDBChannel')
         // .catch(console.error)
         // or fetchAndAdd
         // or store.dispatch('userData/setUserId')
         // or store.dispatch('userData/setUserId', id)
-      })
+      //})
+      //.then( () => { 
+        //console.log("initIfNew")
+        dispatch('userProfileModule/initIfNew', user, { root: true })
+        
+      //})
       .then( () => {
-        //console.log("SUCCESS signedIn from store.auth.js: " + uid)
-        commit('SET_USER_ID', uid)
-        dispatch('app/setLoading', false, { root: true })
+        console.log("SUCCESS signedIn from store.auth.js: " + uid)
+        //commit('SET_USER', user)
+        //dispatch('app/setLoading', false, { root: true })
         
       })
       .catch( (error) => {
         commit('SET_ERROR',error)
-        commit('SET_USER_ID', undefined)
-        dispatch('app/setLoading', false, { root: true })
+        commit('SET_USER', undefined)
+        //dispatch('app/setLoading', false, { root: true })
         console.log("ERROR signedIn from store.auth.js")
         console.log(error)
       })
@@ -101,18 +107,19 @@ export default {
     /**
      * Action to sign user in
      */
-    signIn: ({ commit, dispatch }, { email, password }) => {
-      dispatch('app/setLoading', true, { root: true })
+    signIn: ({ commit }, { email, password }) => {
+      //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       Firebase.auth().signInWithEmailAndPassword(email, password)
       .then (() => {
+        console.log("signedInWithUsernameAndPassword")
         commit('SET_ERROR', null)
-        dispatch('app/setLoading', false, { root: true })
+        //dispatch('app/setLoading', false, { root: true })
       })
       .catch((error) =>{
         commit('SET_ERROR', error)
-        dispatch('app/setLoading', false, { root: true })
+        //dispatch('app/setLoading', false, { root: true })
         console.log("Error: auth/signIn:")
         console.log(error)
       })
@@ -123,32 +130,39 @@ export default {
      * Action to sign user out
      */
     signOut: ({ commit, dispatch }) => {
-      dispatch('app/setLoading', true, { root: true })
+      //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       //Firebase.auth().signOut()
       ///ODO
+      console.log("closeDBChannel")
       dispatch('userProfileModule/closeDBChannel', {clearModule: true}, { root: true })
       .then( () => { 
+        console.log("signOut")
         Firebase.auth().signOut()
       })    
       /// EEE  
       .then (() => {
+        commit('SET_USER', undefined)
         commit('SET_ERROR', null)
-        dispatch('app/setLoading', false, { root: true })
+        //dispatch('app/setLoading', false, { root: true })
+        
+        //this.$router.replace('/auth/signin')
+        router.replace('/auth/signin')
+        //window.location.reload();
         
         /// ODO
         console.log("SUCCESS signedOut from store.auth.js")
-        commit('SET_USER_ID', undefined)
-        const currentRouter = router.app.$route
-        if (currentRouter.meta && currentRouter.meta.authRequired) {
-          router.push('/auth/signin')
-        }
+        
+        //const currentRouter = router.app.$route
+        //if (currentRouter.meta && currentRouter.meta.authRequired) {
+        //  router.push('/auth/signin')
+        //}
         /// EEE
       })
       .catch((error) =>{
         commit('SET_ERROR', error)
-        dispatch('app/setLoading', false, { root: true })
+        //dispatch('app/setLoading', false, { root: true })
         console.log("Error: auth/signOut:")
         console.log(error)
       })
@@ -158,21 +172,23 @@ export default {
     /**
      * Action to sign user up
      */
-    signUp: ({commit, dispatch }, payload) => {
-      dispatch('app/setLoading', true, { root: true })
+    signUp: ({commit }, payload) => {
+      //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
       Firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
       .then (() => {
-        dispatch('app/setLoading', false, { root: true })
+        console.log("createUserWithEmailAndPassword")
+        //dispatch('app/setLoading', false, { root: true })
         commit('SET_ERROR', null)
       })
       .catch(function(error) {
         commit('SET_ERROR', error)
-        dispatch('app/setLoading', false, { root: true })
+        //dispatch('app/setLoading', false, { root: true })
         console.log("Error: auth/signUp:")
         console.log(error)
       })
+      
     },
 
 
@@ -189,15 +205,13 @@ export default {
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
       .then(function() {
         Firebase.auth().currentUser.updateEmail(payload.newEmail)
-        return
       })
       .then(function() { 
         dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
-        return
       })
-      .then(function() {
-        return
-      })
+//      .then(function() {
+//        return
+//      })
       //.then(function() {
         //commit('SET_ERROR', null)
         //dispatch('app/setLoading', false, { root: true })
