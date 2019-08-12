@@ -203,10 +203,11 @@ export default {
       console.log("updating email to:" + payload.newEmail + " with pw: " + payload.currentPassword)
       
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
-      .then(function() {
-        Firebase.auth().currentUser.updateEmail(payload.newEmail)
+      .then((userCredential) => {
+        //Firebase.auth().currentUser.updateEmail(payload.newEmail)
+        userCredential.user.updateEmail(payload.newEmail)
       })
-      .then(function() { 
+      .then(() => { 
         dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
       })
 //      .then(function() {
@@ -216,8 +217,8 @@ export default {
         //commit('SET_ERROR', null)
         //dispatch('app/setLoading', false, { root: true })
       //})
-      .catch(function(error) {
-        console.log(error)
+      .catch((error) => {
+        console.log(error.message)
         alert(error)
         //commit('SET_ERROR', error)
         //dispatch('app/setLoading', false, { root: true })
