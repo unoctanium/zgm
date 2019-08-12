@@ -17,7 +17,7 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form _lazy-validation  v-model="formValid" @submit="onSignup" @keyup.enter.native="onSignup">
+      <v-form _lazy-validation  v-model="formValid" @submit="onSignup">
         
         <v-text-field
           append-icon="person"
@@ -110,7 +110,7 @@ export default {
     user: {
       handler(user) {
         if (user!=undefined) {
-          this.$router.push('/')
+          //this.$router.push('/')
         }
       },
       immediate: true
@@ -121,7 +121,7 @@ export default {
     
     onSignup(event) {
       event.preventDefault()
-      this.signUp ( { email:this.email, password:this.password })
+      this.signUp ( { email:this.email, password:this.password, route: '/' })
     }
 
   }

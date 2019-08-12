@@ -18,7 +18,7 @@
       <!-- Login Error -->
       <p v-if="authError">{{ authError }}</p>
 
-      <v-form _lazy-validation v-model="formValid" ref="signinForm" @submit="onSignin" @keyup.enter.native="onSignin">
+      <v-form _lazy-validation v-model="formValid" ref="signinForm" @submit="onSignin">
         
         <v-text-field
           append-icon="person"

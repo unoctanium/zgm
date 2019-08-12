@@ -1,5 +1,5 @@
 // Update the version number for a new production build !!!
-// version: '0.1.0'
+// version: '0.1.1'
 // Also update version in .env.production
 
 // install new service worker when ok, then reload page.

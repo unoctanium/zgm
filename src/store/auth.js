@@ -20,14 +20,14 @@ export default {
     /**
     * Resets error message
     */
-    resetError: ({ commit }) => {
+    resetError ({ commit })  {
       commit('SET_ERROR',null)
     },
 
     /**
      * Callback fired when user signed in
      */
-    signedin: async ({ commit, dispatch }, user) => {
+    signedin ({ commit, dispatch }, user) {
 
       //console.log(user)
       const uid = user.uid
@@ -39,7 +39,8 @@ export default {
       
       //.then( () => { 
         console.log("openDBChannel")
-        await dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
+        // ??????????????  ODO   await dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
+        dispatch('userProfileModule/openDBChannel', { uid }, { root: true })
         // Explanation:
         // store.dispatch('userProfileModule/openDBChannel')
         // .catch(console.error)
@@ -47,11 +48,11 @@ export default {
         // or store.dispatch('userData/setUserId')
         // or store.dispatch('userData/setUserId', id)
       //})
-      //.then( () => { 
-        //console.log("initIfNew")
+      .then( () => { 
+        console.log("initIfNew")
         dispatch('userProfileModule/initIfNew', user, { root: true })
         
-      //})
+      })
       .then( () => {
         console.log("SUCCESS signedIn from store.auth.js: " + uid)
         //commit('SET_USER', user)
@@ -107,7 +108,7 @@ export default {
     /**
      * Action to sign user in
      */
-    signIn: ({ commit }, { email, password }) => {
+    signIn ({ commit }, { email, password }) {
       //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
@@ -129,7 +130,7 @@ export default {
     /**
      * Action to sign user out
      */
-    signOut: ({ commit, dispatch }) => {
+    signOut ({ commit, dispatch }) {
       //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
@@ -172,7 +173,7 @@ export default {
     /**
      * Action to sign user up
      */
-    signUp: ({commit }, payload) => {
+    signUp ({commit }, payload) {
       //dispatch('app/setLoading', true, { root: true })
       commit('SET_ERROR', null)
 
@@ -181,6 +182,7 @@ export default {
         console.log("createUserWithEmailAndPassword")
         //dispatch('app/setLoading', false, { root: true })
         commit('SET_ERROR', null)
+        router.replace('/')
       })
       .catch(function(error) {
         commit('SET_ERROR', error)
@@ -196,7 +198,8 @@ export default {
     /**
      * Action to update user eMail
     */   
-    updateEmail: ({ dispatch }, payload)  => {
+   /*
+    updateEmail: ({ dispatch }, payload)  => { // eslint-disable-line
       //dispatch('app/setLoading', true, { root: true })
       //commit('SET_ERROR', null)
 
@@ -204,12 +207,14 @@ export default {
       
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
       .then((userCredential) => {
+        console.log("credential")
+        console.log(userCredential)
         //Firebase.auth().currentUser.updateEmail(payload.newEmail)
         userCredential.user.updateEmail(payload.newEmail)
       })
-      .then(() => { 
-        dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
-      })
+      //.then(() => { 
+      //  dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
+      //})
 //      .then(function() {
 //        return
 //      })
@@ -218,10 +223,50 @@ export default {
         //dispatch('app/setLoading', false, { root: true })
       //})
       .catch((error) => {
+        console.log("CATCH!!!")
         console.log(error.message)
         alert(error)
         //commit('SET_ERROR', error)
         //dispatch('app/setLoading', false, { root: true })
+      })
+    },
+    */
+
+/*
+    updateEmail: ({ dispatch }, payload)  => {
+     {
+      this.reauthenticate(currentPassword).then(() => {
+        var user = firebase.auth().currentUser;
+        user.updateEmail(newEmail).then(() => {
+          console.log("Email updated!");
+        }).catch((error) => { console.log(error); });
+      }).catch((error) => { console.log(error); });
+    
+    },
+*/
+
+
+
+    updateEmail ({dispatch}, payload)  { // eslint-disable-line
+      Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)  
+      .then(function (userCredential) {
+        userCredential.user.updateEmail(payload.newEmail)  // update new email
+        .then(function () {
+          console.log("email update");
+          // Update successful.
+          dispatch('userProfileModule/patch', { email: payload.newEmail }, { root: true })
+        }).catch(function (error) {
+          console.log("ERROR");
+          console.log(error);
+          // An error happened.
+          // if updated user email already exists, it returns error code: auth/email-already-in-use
+        })
+      })
+      .catch(function (error) {
+        // An error happened.
+        // cant log in
+        console.log("ERROR");
+        console.log(error);
       })
     },
 
@@ -229,32 +274,61 @@ export default {
     /**
      * Action to update user password
     */   
-    updatePassword: ( { dispatch}, payload ) => { // eslint-disable-line
+   
+
+
+    updatePassword ({}, payload)  { // eslint-disable-line
+      Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)  
+      .then(function (userCredential) {
+        userCredential.user.updatePassword(payload.newPassword)  // update new email
+        .then(function () {
+          console.log("password update");
+          // Update successful.
+          
+        }).catch(function (error) {
+          console.log("ERROR");
+          console.log(error);
+          // An error happened.
+          // if updated user email already exists, it returns error code: auth/email-already-in-use
+        })
+      })
+      .catch(function (error) {
+        // An error happened.
+        // cant log in
+        console.log("ERROR");
+        console.log(error);
+      })
+    },
+
+
+    /*
+    updatePassword ( { dispatch}, payload ) { // eslint-disable-line
       //dispatch('app/setLoading', true, { root: true })
       //commit('SET_ERROR', null)
       console.log("updating password to:" + payload.newPassword)
       
       Firebase.auth().signInWithEmailAndPassword(payload.currentEmail, payload.currentPassword)
-      .then(function() {
-        Firebase.auth().currentUser.updatePassword(payload.newPassword)
-        return
+      .then((userCredential) => {
+        userCredential.user.updatePassword(payload.newPassword)
       })
-      .then(function() {
-        return
-      })
+      //.then(function() {
+      //  return
+      //})
       //.then(function() {
         //commit('SET_ERROR', null)
         //dispatch('app/setLoading', false, { root: true })
       //  console.log("updated password")
         //return true
       //})
-      .catch(function(error) {
+      .catch((error) => {
         //console.log(error)
         //commit('SET_ERROR', error)
         //dispatch('app/setLoading', false, { root: true })
         alert(error)
       })
     },
+*/
+
 
   }
 }

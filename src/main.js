@@ -56,6 +56,7 @@ initFirebase()
   // (might be a connection error, or the app is open in another tab)
   console.log("ERROR from main.js:")
   console.log(error)
+  alert(error)
   router.push('/error')
 })
 
