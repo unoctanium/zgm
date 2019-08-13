@@ -10,12 +10,12 @@
       <v-spacer />
         <v-btn
           v-if="snackbar.buttonAction!=null"
-          flat
+          text
           @click='snackbar.buttonAction'
         >
           {{ snackbar.buttonText }}
         </v-btn>
-      <v-btn dark flat @click.native="snackbar.show = false" icon>
+      <v-btn dark text @click.native="snackbar.show = false" icon>
         <v-icon>close</v-icon>
       </v-btn>
     </v-snackbar> 

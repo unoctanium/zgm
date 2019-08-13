@@ -5,6 +5,7 @@
       <div class="layout column align-center">
         <img src="@/assets/logo.png" alt="zgm logo" width="120" height="120" />
         <h1 class="flex my-4 primary--text">{{ appShortTitle }}</h1>
+        <div class="caption">{{ appVersion }}</div>
       </div>
       
       <!-- Offline instruction -->
@@ -82,8 +83,8 @@ export default {
   },
   computed: {
     ...mapState('auth', ['user', 'authError']),
-    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle']),
- 
+    ...mapState('app', ['networkOnLine', 'appTitle', 'appShortTitle', 'appVersion']),
+     
     nextRoute () {
       return this.$route.query.redirectUrl || '/'
     }

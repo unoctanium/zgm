@@ -23,7 +23,7 @@
     <v-app-bar-nav-icon @click="handleDrawerToggle"></v-app-bar-nav-icon>
     
     <!--
-    <v-text-field flat solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
+    <v-text-field text solo-inverted prepend-inner-icon="search" label="Search" clearable class="search"></v-text-field>
     -->
     
     <!-- TITLE -->

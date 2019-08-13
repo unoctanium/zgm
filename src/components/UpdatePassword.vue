@@ -60,6 +60,7 @@
             :type="passwordVisible ? 'text' : 'password'"
             :rules="[rules.required, rules.min]"
             required
+            @click:append="passwordVisible = !passwordVisible"
           ></v-text-field>
           <v-text-field 
             v-model="confirmPassword"
@@ -70,6 +71,7 @@
             :append-icon="passwordVisible ? 'visibility' : 'visibility_off'"
             :type="passwordVisible ? 'text' : 'password'"
             :rules="[rules.required, rules.comparePasswords]"
+            @click:append="passwordVisible = !passwordVisible"
           ></v-text-field>
         </v-card-text>
 

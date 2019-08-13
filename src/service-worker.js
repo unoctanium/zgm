@@ -1,5 +1,5 @@
 // Update the version number for a new production build !!!
-// version: '0.1.5'
+// version: '0.1.9'
 // Also update version in .env.production
 
 
@@ -27,7 +27,7 @@ self.addEventListener("message", msg=>{
 workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
 // eslint-disable-next-line
-workbox.clientsClaim();
+//workbox.clientsClaim();
 
 self.__precacheManifest = [].concat(self.__precacheManifest || [])
 
