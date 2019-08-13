@@ -1,6 +1,8 @@
 // Update the version number for a new production build !!!
-// version: '0.1.3'
+// version: '0.1.5'
 // Also update version in .env.production
+
+
 
 // install new service worker when ok, then reload page.
 self.addEventListener("message", msg=>{
@@ -21,9 +23,20 @@ self.addEventListener("message", msg=>{
     }*/
 })
 
-self.__precacheManifest = [].concat(self.__precacheManifest || []);
 // eslint-disable-next-line
-workbox.precaching.suppressWarnings();
+workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
+
 // eslint-disable-next-line
-workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
+workbox.clientsClaim();
+
+self.__precacheManifest = [].concat(self.__precacheManifest || [])
+
+// eslint-disable-next-line
+workbox.precaching.suppressWarnings()
+
+// eslint-disable-next-line
+workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
+
+// eslint-disable-next-line
+workbox.routing.registerNavigationRoute('/')
 

@@ -5,7 +5,7 @@ export default {
       installEvent: null, // fired if PWA can be installed
       installedEvent: null, // fired if PWA has been installed
       refreshing: false,
-      registration: null
+      registration: null,
     };
   },
   computed: { 
@@ -55,8 +55,8 @@ export default {
     handleInstallButton() {
       //console.log("handle install") 
 
-      this.snackbar.show = false
-      this.snackbar.text = ''
+      this.snackbar.show = true
+      this.snackbar.text = 'handling install'
       this.snackbar.buttonText = ''
       this.snackbar.action = null
 
@@ -86,8 +86,8 @@ export default {
     handleRefreshButton() {
       //console.log("handle refresh") 
 
-      this.snackbar.show = false
-      this.snackbar.text = ''
+      this.snackbar.show = true
+      this.snackbar.text = 'handling refresh'
       this.snackbar.buttonText = ''
       this.snackbar.buttonAction = null
 

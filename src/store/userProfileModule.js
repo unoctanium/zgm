@@ -50,7 +50,7 @@ const userProfileModule = {
           function () {
             uploadTask.snapshot.ref.getDownloadURL()
             .then((downloadURL) => {
-              console.log('userProfileModule.js: File available at ' + downloadURL)
+              //console.log('userProfileModule.js: File available at ' + downloadURL)
               dispatch('patch', { ...data, photoURL: downloadURL }) 
             })
             .catch(function(error) { // eslint-disable-line
@@ -101,7 +101,7 @@ const userProfileModule = {
      * Action to update user data
      */   
     updateUserData: ({ dispatch }, { data }) => {
-      console.log("patching user data")
+      //console.log("patching user data")
       dispatch('patch', { ...data }) 
     },
 

@@ -15,10 +15,9 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   NProgress.start()
   if (to.matched.some(record => record.meta.authRequired)) {
-    console.log("router: user is:")
-    console.log(store.state.auth.user)
+    //console.log("router: user is:")
+    //console.log(store.state.auth.user)
     if (!(store.state.auth.user)) {
-      console.log("yo")
       next({
         path: '/auth/signin',
         query: { redirect: to.fullPath }
