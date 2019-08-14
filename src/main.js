@@ -5,7 +5,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import '@babel/polyfill'
-import './registerServiceWorker'
+import '@/util/registerServiceWorker'
 import '@/util/handle-network-status'
 
 import VuetifyDialog from 'vuetify-dialog'

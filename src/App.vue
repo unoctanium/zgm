@@ -28,7 +28,7 @@
 
 
 //import AppEvents from "./event"
-import installPrompt from './installPrompt'
+import installPrompt from './plugins/installPrompt'
 export default {
   components: {
     // add components like ThemeSettings right drawer

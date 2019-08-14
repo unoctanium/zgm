@@ -39,6 +39,17 @@ const Menu = [
     },
     { divider: true},
     {
+      title: "Test Collection Detail",
+      icon: "view_quilt",
+      named_route: "TestCollectionDetail"
+    },
+    {
+      title: "Test Collection Report",
+      icon: "view_list",
+      named_route: "TestCollectionReport"      
+    },
+    { divider: true},
+    {
       title: "ListWidget",
       icon: "widgets",
       named_route: "ListWidget"      

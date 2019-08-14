@@ -1,5 +1,5 @@
 // Update the version number for a new production build !!!
-// version: '0.2.0'
+// version: '0.2.1'
 // Also update version in .env.production
 
 

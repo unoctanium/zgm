@@ -136,4 +136,34 @@ export const routes = [
       */
     ]
   },
+
+ //datastore
+ {
+  path: "/datastore",
+  component: DefaultLayout,
+  meta: { title: "Datastore"},
+  redirect: "/datastore/list",
+  children: [
+    {
+      path: "/datastore/list",
+      name: "DatastoreList",
+      meta: { title: "Datastore", authRequired: true },
+      component: () => import(/* webpackChunkName: "datastore-list" */ "@/views/datastore/DatastoreList.vue")
+    },
+    {
+      path: "/datastore/test",
+      name: "TestCollectionDetail",
+      meta: { title: "Test Collection", authRequired: true },
+      component: () => import(/* webpackChunkName: "test-collection-detail" */ "@/views/datastore/TestCollectionDetail.vue")
+    },
+    {
+      path: "/datastore/testreport",
+      name: "TestCollectionReport",
+      meta: { title: "Test Collection Repoprt", authRequired: true },
+      component: () => import(/* webpackChunkName: "test-collection-report" */ "@/views/datastore/TestCollectionReport.vue")
+    }
+  ]
+},
+
+
 ]

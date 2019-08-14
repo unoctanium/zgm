@@ -13,12 +13,13 @@ import app from './app'
 
 // import my easy firestore modules
 import userProfileModule from './userProfileModule'
+import testCollectionModule from './testCollectionModule'
 
 Vue.use(Vuex)
 
 // do the magic for vuex-easy-firestore 🧙🏻‍♂️
 const easyFirestore = VuexEasyFirestore( 
-  [userProfileModule],
+  [userProfileModule, testCollectionModule],
   {logging: true, FirebaseDependency: Firebase}
 )
 // TODO: @ODO: Remember to turn off logging here for production builds
