@@ -62,13 +62,13 @@ npm run lint
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
-##Developer documentation
+## Developer documentation
 
-###To add a new Firestore Collection:
+### To add a new Firestore Collection:
 
 read documentation: (https://firebase.google.com/docs/firestore) and (https://mesqueeb.github.io/vuex-easy-firestore/).
 
-####Create new entry in api/menu.js
+#### Create new entry in api/menu.js
 ```
 {
   title: "Test Collection Detail",
@@ -76,7 +76,7 @@ read documentation: (https://firebase.google.com/docs/firestore) and (https://me
 },
 ```
 
-####Create new entries in router/config.js
+#### Create new entries in router/config.js
 ```
 //datastore
 {
@@ -101,7 +101,7 @@ read documentation: (https://firebase.google.com/docs/firestore) and (https://me
 },
 ```
 
-####Create new vue-file under /src/views/datastore, i.e: DatastoreTestDetail.vue
+#### Create new vue-file under /src/views/datastore, i.e: DatastoreTestDetail.vue
 ```
 <template>
   <div id="datastore-test-detail">
@@ -124,7 +124,7 @@ export default {
 </script>
 ```
 
-####In /src/store/index.js import a new module for this datastore / document / collection and inject it
+#### In /src/store/index.js import a new module for this datastore / document / collection and inject it
 ```
 import testCollectionModule from './testCollectionModule'
 // do the magic for vuex-easy-firestore
@@ -135,7 +135,7 @@ const easyFirestore = VuexEasyFirestore(
 // Remember to turn off logging here for production builds
 ```
 
-####Add and edit /src/store/testCollectionModule.js
+#### Add and edit /src/store/testCollectionModule.js
 ```
 const testCollectionModule = {
   firestorePath: 'tests',
@@ -155,7 +155,7 @@ const testCollectionModule = {
 export default testCollectionModule
 ```
 
-####Add the collection to /src/frirebase/firestore.rules
+#### Add the collection to /src/frirebase/firestore.rules
 ```
 service cloud.firestore {
   match /databases/{database}/documents {
