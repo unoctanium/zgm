@@ -64,7 +64,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ##Developer documentation
 
-###To add a new DB Schema:
+###To add a new Firestore Collection:
 
 read documentation: (https://firebase.google.com/docs/firestore) and (https://mesqueeb.github.io/vuex-easy-firestore/).
 
@@ -72,7 +72,6 @@ read documentation: (https://firebase.google.com/docs/firestore) and (https://me
 ```
 {
   title: "Test Collection Detail",
-  icon: "view_quilt",
   named_route: "TestCollectionDetail"
 },
 ```
@@ -139,7 +138,7 @@ const easyFirestore = VuexEasyFirestore(
 ####Add and edit /src/store/testCollectionModule.js
 ```
 const testCollectionModule = {
-  firestorePath: 'test',
+  firestorePath: 'tests',
   firestoreRefType: 'collection', // or 'collection' or doc'
   moduleName: 'testCollectionModule',
   statePropName: 'data',
@@ -156,3 +155,18 @@ const testCollectionModule = {
 export default testCollectionModule
 ```
 
+####Add the collection to /src/frirebase/firestore.rules
+```
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function authenticated() { return request.auth.uid != null }
+    ...    
+    match /tests/{test} {
+      allow read: if authenticated();
+      allow create, update, delete: if authenticated();
+      allow list: if authenticated();
+    }
+    ...
+  }
+}
+```

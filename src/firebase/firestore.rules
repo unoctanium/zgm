@@ -6,9 +6,14 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
-      allow get, read: if authenticated() && (request.auth.uid == userId || isAdmin());
-      allow create: if authenticated() && request.auth.uid == userId;
-      allow update, delete: if authenticated() && request.auth.uid == userId;
+      allow read: if authenticated() && (request.auth.uid == userId || isAdmin());
+      allow create, update, delete: if authenticated() && request.auth.uid == userId;
+    }
+
+    match /tests/{test} {
+      allow read: if authenticated();
+      allow create, update, delete: if authenticated();
+      allow list: if authenticated();
     }
 
     //match /users/{userId}/products/{productId} {

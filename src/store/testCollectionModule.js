@@ -3,7 +3,7 @@
 //import Vue from 'vue' //eslint-disable-line
 
 const testCollectionModule = {
-  firestorePath: 'test',
+  firestorePath: 'tests',
   firestoreRefType: 'collection', // or 'collection' or doc'
   moduleName: 'testCollectionModule',
   statePropName: 'data',

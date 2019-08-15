@@ -14,9 +14,11 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
+        <v-btn class="mb-2" @click="csvExport(csvData)">Export</v-btn>
+        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on }">
-            <v-btn color="primary" dark class="mb-2" v-on="on">New Item</v-btn>
+            <v-btn class="mb-2" v-on="on">New Item</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -33,7 +35,7 @@
                     <v-text-field v-model="editedItem.textValue" label="Text Value"></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.boolValue" label="Bool Value"></v-text-field>
+                    <v-checkbox v-model="editedItem.boolValue" label="Bool Value"></v-checkbox>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="editedItem.c1Value" label="Detail 1"></v-text-field>
@@ -69,8 +71,13 @@
         delete
       </v-icon>
     </template>
+    <!--
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize">Reset</v-btn>
+      <v-btn color="primary" @click="initialize()">Init</v-btn>
+    </template>
+    -->
+    <template v-slot:item.boolValue="{ item }">
+        <span>{{ item.boolValue? "1": "0" }}</span>
     </template>
   </v-data-table>
 </template>
@@ -94,7 +101,7 @@ export default {
           text: 'String',
           align: 'left',
           sortable: true,
-          value: 'stringValue',
+          value: 'textValue',
         },
         {
           text: 'Bool',
@@ -120,14 +127,14 @@ export default {
       editedIndex: -1,
       editedItem: {
         numValue: 0,
-        stringValue: '',
+        textValue: '',
         boolValue: false,
         c1Value: '',
         c2Value: '',
       },
       defaultItem: {
         numValue: 0,
-        stringValue: '',
+        textValue: '',
         boolValue: false,
         c1Value: '',
         c2Value: '',
@@ -138,6 +145,13 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
+
+    csvData() {
+      return this.data.map(item => ({
+        ...item,
+        boolValue: item.boolValue? 1 : 0,
+      }));
+    }
   },
 
   watch: {
@@ -155,14 +169,14 @@ export default {
       this.data = [
         {
           numValue: 1,
-          stringValue: 'one',
+          textValue: 'one',
           boolValue: false,
           c1Value: '1c1Detail',
           c2Value: '1c2Detail',
         },
         {
           numValue: 2,
-          stringValue: 'two',
+          textValue: 'two',
           boolValue: true,
           c1Value: '2c1Detail',
           c2Value: '2c2Detail',
@@ -178,7 +192,16 @@ export default {
 
     deleteItem (item) {
       const index = this.data.indexOf(item)
-      confirm('Are you sure you want to delete this item?') && this.data.splice(index, 1)
+
+      this.$dialog.confirm({
+        text: 'Are you sure you want to delete this item?'
+      }).
+      then(res => {
+        if(res) {
+          this.data.splice(index, 1)
+        }
+      })
+      //confirm('Are you sure you want to delete this item?') && this.data.splice(index, 1)
     },
 
     close () {
@@ -196,6 +219,22 @@ export default {
         this.data.push(this.editedItem)
       }
       this.close()
+    },
+
+    csvExport(arrData) {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += [
+        Object.keys(arrData[0]).join(","),
+        ...arrData.map(item => Object.values(item).join(","))
+      ]
+        .join("\n")
+        .replace(/(^\[)|(\]$)/gm, "");
+
+      const data = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", data);
+      link.setAttribute("download", "export.csv");
+      link.click();
     },
 
   }
