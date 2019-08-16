@@ -30,6 +30,7 @@
 //import AppEvents from "./event"
 import installPrompt from './plugins/installPrompt'
 export default {
+  name: "AppTemplate",
   components: {
     // add components like ThemeSettings right drawer
   },

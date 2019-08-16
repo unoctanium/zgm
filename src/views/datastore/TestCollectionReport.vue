@@ -37,12 +37,6 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-checkbox v-model="editedItem.boolValue" label="Bool Value"></v-checkbox>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.c1Value" label="Detail 1"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.c2Value" label="Detail 2"></v-text-field>
-                  </v-col>
                 </v-row>
               </v-container>
             </v-card-text>
@@ -76,14 +70,23 @@
       <v-btn color="primary" @click="initialize()">Init</v-btn>
     </template>
     -->
+    <!-- Dynamic number of columns -->
+<!--    <template v-slot:body="props">
+      <tr :key="'tr-'+idx" v-for="(item,idx) in props.items">
+        <td>{{item.numValue}}</td>
+        <td>{{item.textValue}}</td>
+        <td>{{item.boolValue? "1": "0"}}</td>
+        <td>{{item.action}}</td>
+      </tr>
+    </template>-->
     <template v-slot:item.boolValue="{ item }">
         <span>{{ item.boolValue? "1": "0" }}</span>
     </template>
+    
   </v-data-table>
 </template>
 
 <script>
-//import {mapState, mapActions} from 'vuex'
 
 export default {
   name: "TestCollectionReport",
@@ -109,35 +112,19 @@ export default {
           sortable: false,
           value: 'boolValue',
         },
-        {
-          text: 'Detail1',
-          align: 'left',
-          sortable: false,
-          value: 'c1Value',
-        },
-        {
-          text: 'Detail2',
-          align: 'left',
-          sortable: false,
-          value: 'c2Value',
-        },
         { text: 'Actions', value: 'action', sortable: false },
       ],
-      data: [],
+      //data: [],
       editedIndex: -1,
       editedItem: {
         numValue: 0,
         textValue: '',
         boolValue: false,
-        c1Value: '',
-        c2Value: '',
       },
       defaultItem: {
         numValue: 0,
         textValue: '',
         boolValue: false,
-        c1Value: '',
-        c2Value: '',
       },
     }
   },
@@ -145,11 +132,15 @@ export default {
     formTitle () {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
+    data() {
+      return Object.values(this.$store.state.testCollectionModule.data)
+    },
 
     csvData() {
       return this.data.map(item => ({
-        ...item,
-        boolValue: item.boolValue? 1 : 0,
+        numValue: item.numValue,
+        textValue: item.textValue,
+        boolValue: item.boolValue? 1 : 0
       }));
     }
   },
@@ -164,24 +155,14 @@ export default {
     this.initialize()
   },
 
+  destroyed() {
+     this.$store.dispatch('testCollectionModule/closeDBChannel', {clearModule: true})
+  },
+
   methods: {
     initialize () {
-      this.data = [
-        {
-          numValue: 1,
-          textValue: 'one',
-          boolValue: false,
-          c1Value: '1c1Detail',
-          c2Value: '1c2Detail',
-        },
-        {
-          numValue: 2,
-          textValue: 'two',
-          boolValue: true,
-          c1Value: '2c1Detail',
-          c2Value: '2c2Detail',
-        },
-      ]
+      this.$store.dispatch('testCollectionModule/openDBChannel')
+      //.then(() => { this.data = this.$store.state.testCollectionModule.data })
     },
 
     editItem (item) {
@@ -191,17 +172,18 @@ export default {
     },
 
     deleteItem (item) {
-      const index = this.data.indexOf(item)
+      //const index = this.data.indexOf(item)
 
       this.$dialog.confirm({
         text: 'Are you sure you want to delete this item?'
       }).
       then(res => {
         if(res) {
-          this.data.splice(index, 1)
+           this.$store.dispatch('testCollectionModule/delete', item.id)
+          //this.data.splice(index, 1)
+          // TODO: @ODO: remember to delete subcollections as well
         }
       })
-      //confirm('Are you sure you want to delete this item?') && this.data.splice(index, 1)
     },
 
     close () {
@@ -213,11 +195,15 @@ export default {
     },
 
     save () {
-      if (this.editedIndex > -1) {
-        Object.assign(this.data[this.editedIndex], this.editedItem)
-      } else {
-        this.data.push(this.editedItem)
-      }
+      //if (this.editedIndex > -1) {
+        //Object.assign(this.data[this.editedIndex], this.editedItem)
+        this.$store.dispatch('testCollectionModule/set', {
+            ...this.editedItem
+          })
+        //##
+      //} else {
+        //this.data.push(this.editedItem)
+      //}
       this.close()
     },
 

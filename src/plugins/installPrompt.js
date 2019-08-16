@@ -1,5 +1,5 @@
 export default {
-  name: 'installPrompt',
+  //name: 'installPrompt',
   data() {
     return {
       installEvent: null, // fired if PWA can be installed

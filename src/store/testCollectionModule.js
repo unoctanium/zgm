@@ -11,12 +11,12 @@ const testCollectionModule = {
 
   sync: {
     defaultValues: {
-      numvalue: 1,
-      stringvalue: "stringvalue",
-      boolvalue: true,
-      nestedvalue: {
-        col1: "hi",
-        col2: "ho"
+      numValue: 1,
+      stringValue: "stringvalue",
+      boolValue: true,
+      nestedValue: {
+        c1Value: "hi",
+        c2Value: "ho"
       }
     },
   },
