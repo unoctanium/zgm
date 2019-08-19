@@ -19,7 +19,7 @@
           :search="search"
           sort-by="numValue"
           class="elevation-1"
-          mobile-breakpoint=780
+          mobile-break-point="780"
         >
           <template v-slot:top>
             <v-toolbar flat>
@@ -33,6 +33,7 @@
               <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
               <v-btn class="mb-2" text @click="csvExport(csvData)">Export</v-btn>
               <v-btn class="mb-2" text @click="newItem()">New Item</v-btn>
+              <v-btn class="mb-2" text @click="debugData()">D</v-btn>
             </v-toolbar>
           </template>
 
@@ -241,6 +242,14 @@ export default {
       link.setAttribute("download", "export.csv");
       link.click();
     },
+
+    debugData() {
+      console.log(this.data)
+      this.$dialog.warning({
+        title: 'data',
+        text: "<pre>"+JSON.stringify(this.data, undefined, 2)+"</pre>"
+      })
+    }
 
   }
 }
