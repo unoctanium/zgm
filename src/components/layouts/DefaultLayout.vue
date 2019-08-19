@@ -86,7 +86,7 @@ export default {
 
 <style>
 .page-wrapper {
-  min-height: calc(100vh - 100px);  
-  padding: 10px;
+  min-height: calc(100vh - 110px);  
+  padding: 0px 5px 5px 5px;
 }
 </style>

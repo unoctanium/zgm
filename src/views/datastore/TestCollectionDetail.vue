@@ -1,18 +1,10 @@
 <template>
 
-  <v-container v-if="!dialog" fluid ma-0 pa-0>
-    <v-row no-gutter class="ma-1 pa-0">
-      <v-col _cols="12" class="pa-0 ma-0">
-        <v-toolbar elevation="1" dense>
-          <v-toolbar-title>Title</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-toolbar-items>
-            <v-btn text>Link 1</v-btn>
-            <v-btn text>Link 2</v-btn>
-            <v-btn text>Link 3</v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
+<!--  <v-container v-if="!dialog" fluid ma-0 pa-0>
 
+    <v-row no-gutter class="ma-0 pa-0">
+      <v-col _cols="12" class="pa-0 ma-0">
+-->
         <v-data-table
           :headers="headers"
           :items="data"
@@ -20,9 +12,10 @@
           sort-by="numValue"
           class="elevation-1"
           mobile-break-point="780"
+          v-if="!dialog" 
         >
-          <template v-slot:top>
-            <v-toolbar flat>
+         <template v-slot:top>
+            <v-toolbar flat :class="{smallheader: $vuetify.breakpoint.smAndDown}">
               <v-toolbar-title>Test Collection</v-toolbar-title>
               <v-divider
                 class="mx-4"
@@ -68,11 +61,14 @@
           <template v-slot:item.boolValue="{ item }">
               <span>{{ item.boolValue? "1": "0" }}</span>
           </template>
+
+ 
         </v-data-table>
+<!--
       </v-col>
     </v-row>
   </v-container>
-
+-->
   <div v-else>
 
     <v-card>
@@ -254,3 +250,13 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+header {
+  position: sticky;
+  top: 66px;
+}
+.smallheader {
+  top: 58px;
+}
+</style>
