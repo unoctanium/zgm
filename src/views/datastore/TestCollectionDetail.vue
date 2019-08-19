@@ -1,60 +1,77 @@
 <template>
-  <div v-if="!dialog">
-    <v-data-table
-      :headers="headers"
-      :items="data"
-      :search="search"
-      sort-by="numValue"
-      class="elevation-1"
-    >
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Test Collection</v-toolbar-title>
-          <v-divider
-            class="mx-4"
-            inset
-            vertical
-          ></v-divider>
+
+  <v-container v-if="!dialog" fluid ma-0 pa-0>
+    <v-row no-gutter class="ma-1 pa-0">
+      <v-col _cols="12" class="pa-0 ma-0">
+        <v-toolbar elevation="1" dense>
+          <v-toolbar-title>Title</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
-          <v-btn class="mb-2" text @click="csvExport(csvData)">Export</v-btn>
-          <v-btn class="mb-2" text @click="newItem()">New Item</v-btn>
+          <v-toolbar-items>
+            <v-btn text>Link 1</v-btn>
+            <v-btn text>Link 2</v-btn>
+            <v-btn text>Link 3</v-btn>
+          </v-toolbar-items>
         </v-toolbar>
-      </template>
 
-      <template v-slot:item.action="{ item }">
-        <v-icon
-          small
-          class="mr-2"
-          @click="editItem(item)"
+        <v-data-table
+          :headers="headers"
+          :items="data"
+          :search="search"
+          sort-by="numValue"
+          class="elevation-1"
+          mobile-breakpoint=780
         >
-          edit
-        </v-icon>
-        <v-icon
-          small
-          @click="deleteItem(item)"
-        >
-          delete
-        </v-icon>
-      </template>
+          <template v-slot:top>
+            <v-toolbar flat>
+              <v-toolbar-title>Test Collection</v-toolbar-title>
+              <v-divider
+                class="mx-4"
+                inset
+                vertical
+              ></v-divider>
+              <v-spacer></v-spacer>
+              <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+              <v-btn class="mb-2" text @click="csvExport(csvData)">Export</v-btn>
+              <v-btn class="mb-2" text @click="newItem()">New Item</v-btn>
+            </v-toolbar>
+          </template>
 
-      <v-alert slot="no-results" :value="true" color="error" icon="warning">
-                  Your search for "{{ search }}" found no results.
-      </v-alert>
-      <!-- Dynamic number of columns -->
-  <!--    <template v-slot:body="props">
-        <tr :key="'tr-'+idx" v-for="(item,idx) in props.items">
-          <td>{{item.numValue}}</td>
-          <td>{{item.textValue}}</td>
-          <td>{{item.boolValue? "1": "0"}}</td>
-          <td>{{item.action}}</td>
-        </tr>
-      </template>-->
-      <template v-slot:item.boolValue="{ item }">
-          <span>{{ item.boolValue? "1": "0" }}</span>
-      </template>
-    </v-data-table>
-  </div>
+          <template v-slot:item.action="{ item }">
+            <v-icon
+              small
+              class="mr-2"
+              @click="editItem(item)"
+            >
+              edit
+            </v-icon>
+            <v-icon
+              small
+              @click="deleteItem(item)"
+            >
+              delete
+            </v-icon>
+          </template>
+
+          <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                      Your search for "{{ search }}" found no results.
+          </v-alert>
+          <!-- Dynamic number of columns -->
+      <!--    <template v-slot:body="props">
+            <tr :key="'tr-'+idx" v-for="(item,idx) in props.items">
+              <td>{{item.numValue}}</td>
+              <td>{{item.textValue}}</td>
+              <td>{{item.boolValue? "1": "0"}}</td>
+              <td>{{item.action}}</td>
+            </tr>
+          </template>-->
+          <template v-slot:item.boolValue="{ item }">
+              <span>{{ item.boolValue? "1": "0" }}</span>
+          </template>
+        </v-data-table>
+      </v-col>
+    </v-row>
+  </v-container>
+
   <div v-else>
 
     <v-card>
