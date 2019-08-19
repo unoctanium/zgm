@@ -18,7 +18,7 @@
         <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
         <v-btn class="mb-2" text @click="csvExport(csvData)">Export</v-btn>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" fullscreen>
           <template v-slot:activator="{ on }">
             <v-btn class="mb-2" text v-on="on">New Item</v-btn>
           </template>
@@ -162,13 +162,13 @@ export default {
   },
 
   destroyed() {
-     this.$store.dispatch('testCollectionModule/closeDBChannel', {clearModule: true})
+     //this.$store.dispatch('testCollectionModule/closeDBChannel', {clearModule: true})
   },
 
   methods: {
     initialize () {
-      this.$store.dispatch('testCollectionModule/openDBChannel')
-      //.then(() => { this.data = this.$store.state.testCollectionModule.data })
+      //this.$store.dispatch('testCollectionModule/openDBChannel')
+      ////.then(() => { this.data = this.$store.state.testCollectionModule.data })
     },
 
     editItem (item) {

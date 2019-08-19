@@ -42,6 +42,9 @@ export default {
       .then( () => { 
         dispatch('userProfileModule/initIfNew', user, { root: true })
       })
+      .then( () => { 
+        dispatch('testCollectionModule/openDBChannel', {}, { root: true })
+      })
       //.then( () => {
         //console.log("SUCCESS signedIn from store.auth.js: " + uid)
       //})
@@ -88,6 +91,9 @@ export default {
       
       commit('SET_ERROR', null)
       dispatch('userProfileModule/closeDBChannel', {clearModule: true}, { root: true })
+      .then( () => { 
+        dispatch('userProfileModule/closeDBChannel', {clearModule: true}, { root: true })
+      })
       .then( () => { 
         Firebase.auth().signOut()
       })    
