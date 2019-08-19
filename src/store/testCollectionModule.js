@@ -11,9 +11,9 @@ const testCollectionModule = {
 
   sync: {
     defaultValues: {
-      numValue: 1,
-      stringValue: "stringvalue",
-      boolValue: true,
+      numValue: 0,
+      stringValue: "",
+      boolValue: false,
       nestedValue: {
         c1Value: "hi",
         c2Value: "ho"

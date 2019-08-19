@@ -13,7 +13,7 @@
         <v-progress-circular indeterminate size="64"></v-progress-circular>
       </v-overlay>
 
-      <div class="page-wrapper" pa-5>
+      <div class="page-wrapper">
         <router-view></router-view>
       </div>
       <!-- App Footer -->

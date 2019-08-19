@@ -2,6 +2,7 @@
   <v-data-table
     :headers="headers"
     :items="data"
+    :search="search"
     sort-by="numValue"
     class="elevation-1"
   >
@@ -14,11 +15,12 @@
           vertical
         ></v-divider>
         <v-spacer></v-spacer>
-        <v-btn class="mb-2" @click="csvExport(csvData)">Export</v-btn>
+        <v-text-field v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
+        <v-btn class="mb-2" text @click="csvExport(csvData)">Export</v-btn>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" fullscreen>
           <template v-slot:activator="{ on }">
-            <v-btn class="mb-2" v-on="on">New Item</v-btn>
+            <v-btn class="mb-2" text v-on="on">New Item</v-btn>
           </template>
           <v-card>
             <v-card-title>
@@ -70,6 +72,9 @@
       <v-btn color="primary" @click="initialize()">Init</v-btn>
     </template>
     -->
+    <v-alert slot="no-results" :value="true" color="error" icon="warning">
+                Your search for "{{ search }}" found no results.
+    </v-alert>
     <!-- Dynamic number of columns -->
 <!--    <template v-slot:body="props">
       <tr :key="'tr-'+idx" v-for="(item,idx) in props.items">
@@ -93,6 +98,7 @@ export default {
   data() {
     return {
       dialog: false,
+      search: '',
       headers: [
         {
           text: 'Num',
@@ -112,7 +118,7 @@ export default {
           sortable: false,
           value: 'boolValue',
         },
-        { text: 'Actions', value: 'action', sortable: false },
+        { text: 'Actions', value: 'action', sortable: false, allign: 'right' },
       ],
       //data: [],
       editedIndex: -1,
@@ -156,13 +162,13 @@ export default {
   },
 
   destroyed() {
-     this.$store.dispatch('testCollectionModule/closeDBChannel', {clearModule: true})
+     //this.$store.dispatch('testCollectionModule/closeDBChannel', {clearModule: true})
   },
 
   methods: {
     initialize () {
-      this.$store.dispatch('testCollectionModule/openDBChannel')
-      //.then(() => { this.data = this.$store.state.testCollectionModule.data })
+      //this.$store.dispatch('testCollectionModule/openDBChannel')
+      ////.then(() => { this.data = this.$store.state.testCollectionModule.data })
     },
 
     editItem (item) {
