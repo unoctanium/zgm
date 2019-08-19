@@ -1,6 +1,6 @@
 <template>
-  <div id="test-collection-detail">
-    <span>TestCollectionDetail</span>
+  <div id="datastore-list">
+    <span>DatastoreList</span>
   </div>
 </template>
 
