@@ -15,7 +15,7 @@
           v-if="!dialog" 
         >
          <template v-slot:top>
-            <v-toolbar flat :class="{smallheader: $vuetify.breakpoint.smAndDown}">
+            <v-toolbar flat :class="{smallheaderD: $vuetify.breakpoint.smAndDown}">
               <v-toolbar-title>Test Collection</v-toolbar-title>
               <v-divider
                 class="mx-4"
