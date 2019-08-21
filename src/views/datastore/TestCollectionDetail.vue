@@ -134,16 +134,12 @@ export default {
       ],
       //data: [],
       editedIndex: -1,
-      editedItem: {
+      editedItem: null,
+      /*{
         numValue: 0,
         textValue: '',
         boolValue: false,
-      },
-      defaultItem: {
-        numValue: 0,
-        textValue: '',
-        boolValue: false,
-      },
+      },*/
     }
   },
   computed: {
@@ -151,7 +147,7 @@ export default {
       return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
     },
     data() {
-      return Object.values(this.$store.state.testCollectionModule.data)
+      return this.$store.getters['testCollectionModule/getDataArray']
     },
 
     csvData() {
@@ -184,7 +180,7 @@ export default {
     },
 
     newItem () {
-      this.editedItem = Object.assign({}, this.defaultItem)
+      this.editedItem = Object.assign({}, this.$store.getters['testCollectionModule/defaultValues'])
       this.editedIndex = -1
       this.dialog = true
     },
@@ -211,7 +207,7 @@ export default {
     close () {
       this.dialog = false
       setTimeout(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedItem = Object.assign({}, this.$store.getters['testCollectionModule/defaultValues'])
         this.editedIndex = -1
       }, 300)
     },
@@ -240,6 +236,7 @@ export default {
     },
 
     debugData() {
+      //console.log(this.$store)
       console.log(this.data)
       this.$dialog.warning({
         title: 'data',

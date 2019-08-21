@@ -11,8 +11,8 @@ const testCollectionModule = {
 
   sync: {
     defaultValues: {
-      numValue: 0,
-      stringValue: "",
+      numValue: 1,
+      textValue: "",
       boolValue: false,
       nestedValue: {
         c1Value: "hi",
@@ -24,7 +24,9 @@ const testCollectionModule = {
   // this object is your store module (will be added as '/testCollectionModule')
   // you can also add state/getters/mutations/actions
   state: {},
-  getters: {},
+  getters: {
+    getDataArray: (state) => { return Object.values(state.data)}
+  },
   mutations: {},
   actions: {}
    
