@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0-rc.1",
-    "@capacitor/cli": "^1.0.0-alpha.38",
+    "@capacitor/cli": "^1.5.3",
     "@capacitor/core": "^1.0.0-alpha.38",
     "@firebase/firestore": "^1.4.9",
     "core-js": "^2.6.5",
